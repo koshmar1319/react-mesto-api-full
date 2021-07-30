@@ -1,8 +1,5 @@
 const Card = require('../models/card');
-
-const ERROR_CODE_BAD_REQUEST = 400;
-const ERROR_CODE_NOT_FOUND = 404;
-const ERROR_CODE_DEFAULT = 500;
+const { ERROR_CODE_BAD_REQUEST, ERROR_CODE_NOT_FOUND, ERROR_CODE_DEFAULT } = require('../utils/constants');
 
 const getAllCards = (req, res) => {
   Card.find({})
@@ -40,6 +37,8 @@ const deleteCard = (req, res) => {
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
         res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным идентификатором не найдена' });
+      } else if (err.name === 'CastError') {
+        res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Переданы некорректные данные при удалении карточки' });
       } else {
         res.status(ERROR_CODE_DEFAULT).send({ message: 'Что-то пошло не так' });
       }
@@ -54,12 +53,14 @@ const likeCard = (req, res) => {
   )
     .orFail(() => {
       const error = new Error('Карточка с заданным идентификатором отсутствует в базе данных');
-      error.statusCode = ERROR_CODE_BAD_REQUEST;
+      error.statusCode = ERROR_CODE_NOT_FOUND;
       throw error;
     })
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.statusCode === ERROR_CODE_BAD_REQUEST) {
+      if (err.statusCode === ERROR_CODE_NOT_FOUND) {
+        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным идентификатором не найдена' });
+      } else if (err.name === 'CastError') {
         res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Переданы некорректные данные для постановки лайка' });
       } else {
         res.status(ERROR_CODE_DEFAULT).send({ message: 'Что-то пошло не так' });
@@ -75,12 +76,14 @@ const dislikeCard = (req, res) => {
   )
     .orFail(() => {
       const error = new Error('Карточка с заданным идентификатором отсутствует в базе данных');
-      error.statusCode = ERROR_CODE_BAD_REQUEST;
+      error.statusCode = ERROR_CODE_NOT_FOUND;
       throw error;
     })
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.statusCode === ERROR_CODE_BAD_REQUEST) {
+      if (err.statusCode === ERROR_CODE_NOT_FOUND) {
+        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Карточка с указанным идентификатором не найдена' });
+      } else if (err.name === 'CastError') {
         res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Переданы некорректные данные для снятия лайка' });
       } else {
         res.status(ERROR_CODE_DEFAULT).send({ message: 'Что-то пошло не так' });

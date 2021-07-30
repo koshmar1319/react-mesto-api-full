@@ -1,8 +1,5 @@
 const User = require('../models/user');
-
-const ERROR_CODE_BAD_REQUEST = 400;
-const ERROR_CODE_NOT_FOUND = 404;
-const ERROR_CODE_DEFAULT = 500;
+const { ERROR_CODE_BAD_REQUEST, ERROR_CODE_NOT_FOUND, ERROR_CODE_DEFAULT } = require('../utils/constants');
 
 const getAllUsers = (req, res) => {
   User.find({})
@@ -23,6 +20,8 @@ const getUser = (req, res) => {
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
         res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Запрашиваемый пользователь не найден' });
+      } else if (err.name === 'CastError') {
+        res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
       } else {
         res.status(ERROR_CODE_DEFAULT).send({ message: 'Что-то пошло не так' });
       }
@@ -61,6 +60,8 @@ const updateUser = (req, res) => {
         res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Запрашиваемый пользователь не найден' });
       } else if (err.name === 'ValidationError') {
         res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля' });
+      } else if (err.name === 'CastError') {
+        res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля' });
       } else {
         res.status(ERROR_CODE_DEFAULT).send({ message: 'Что-то пошло не так' });
       }
@@ -85,6 +86,8 @@ const updateUserAvatar = (req, res) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
         res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Запрашиваемый пользователь не найден' });
       } else if (err.name === 'ValidationError') {
+        res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении аватара' });
+      } else if (err.name === 'CastError') {
         res.status(ERROR_CODE_BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении аватара' });
       } else {
         res.status(ERROR_CODE_DEFAULT).send({ message: 'Что-то пошло не так' });
