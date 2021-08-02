@@ -32,7 +32,7 @@ const deleteCard = (req, res) => {
     })
     .then((card) => {
       card.remove();
-      res.status(200).send('Карточка удалена');
+      res.status(200).send({ message: 'Карточка удалена' });
     })
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
