@@ -14,9 +14,7 @@ const { ErrorState } = require('../middlewares/errors');
 const getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => {
-      next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-    });
+    .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
 };
 
 const getUser = (req, res, next) => {
@@ -27,12 +25,12 @@ const getUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        next(err);
-      } else if (err.name === 'CastError') {
-        next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
-      } else {
-        next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+        return next(err);
       }
+      if (err.name === 'CastError') {
+        return next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
+      }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 
@@ -61,7 +59,7 @@ const createUser = (req, res, next) => {
   });
 
   if (!validEmail || !validPassword) {
-    next(new ErrorState('Некорректная электронная почта или пароль', ERROR_CODE_BAD_REQUEST));
+    return next(new ErrorState('Некорректная электронная почта или пароль', ERROR_CODE_BAD_REQUEST));
   }
 
   const hashPassword = bcrypt.hashSync(password, 10);
@@ -72,12 +70,12 @@ const createUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ErrorState('Переданы некорректные данные при создании пользователя', ERROR_CODE_BAD_REQUEST));
-      } else if (err.name === 'MongoError' && err.code === 11000) {
-        next(new ErrorState('Пользователь уже существует', ERROR_CODE_CONFLICT));
-      } else {
-        next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+        return next(new ErrorState('Переданы некорректные данные при создании пользователя', ERROR_CODE_BAD_REQUEST));
       }
+      if (err.name === 'MongoError' && err.code === 11000) {
+        return next(new ErrorState('Пользователь уже существует', ERROR_CODE_CONFLICT));
+      }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 
@@ -95,14 +93,15 @@ const updateUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        next(err);
-      } else if (err.name === 'ValidationError') {
-        next(new ErrorState('Переданы некорректные данные при обновлении профиля', ERROR_CODE_BAD_REQUEST));
-      } else if (err.name === 'CastError') {
-        next(new ErrorState('Переданы некорректные данные при обновлении профиля', ERROR_CODE_BAD_REQUEST));
-      } else {
-        next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+        return next(err);
       }
+      if (err.name === 'ValidationError') {
+        return next(new ErrorState('Переданы некорректные данные при обновлении профиля', ERROR_CODE_BAD_REQUEST));
+      }
+      if (err.name === 'CastError') {
+        return next(new ErrorState('Переданы некорректные данные при обновлении профиля', ERROR_CODE_BAD_REQUEST));
+      }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 
@@ -123,14 +122,15 @@ const updateUserAvatar = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        next(err);
-      } else if (err.name === 'ValidationError') {
-        next(new ErrorState('Переданы некорректные данные при обновлении аватара', ERROR_CODE_BAD_REQUEST));
-      } else if (err.name === 'CastError') {
-        next(new ErrorState('Переданы некорректные данные при обновлении аватара', ERROR_CODE_BAD_REQUEST));
-      } else {
-        next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+        return next(err);
       }
+      if (err.name === 'ValidationError') {
+        return next(new ErrorState('Переданы некорректные данные при обновлении аватара', ERROR_CODE_BAD_REQUEST));
+      }
+      if (err.name === 'CastError') {
+        return next(new ErrorState('Переданы некорректные данные при обновлении аватара', ERROR_CODE_BAD_REQUEST));
+      }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 
@@ -160,10 +160,9 @@ const login = (req, res, next) => {
     })
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
-        next(err);
-      } else {
-        next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+        return next(err);
       }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 
@@ -175,12 +174,12 @@ const getCurrentUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        next(err);
-      } else if (err.name === 'CastError') {
-        next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
-      } else {
-        next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+        return next(err);
       }
+      if (err.name === 'CastError') {
+        return next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
+      }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 

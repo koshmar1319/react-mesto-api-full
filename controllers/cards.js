@@ -10,22 +10,20 @@ const { ErrorState } = require('../middlewares/errors');
 const getAllCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.status(200).send({ data: cards }))
-    .catch(() => {
-      next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-    });
+    .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
 };
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
+
   Card.create({ name, link, owner })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ErrorState('Переданы некорректные данные при создании карточки', ERROR_CODE_BAD_REQUEST));
-      } else {
-        next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+        return next(new ErrorState('Переданы некорректные данные при создании карточки', ERROR_CODE_BAD_REQUEST));
       }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 
@@ -44,12 +42,12 @@ const deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        next(err);
-      } else if (err.name === 'CastError') {
-        next(new ErrorState('Переданы некорректные данные при удалении карточки', ERROR_CODE_BAD_REQUEST));
-      } else {
-        next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+        return next(err);
       }
+      if (err.name === 'CastError') {
+        return next(new ErrorState('Переданы некорректные данные при удалении карточки', ERROR_CODE_BAD_REQUEST));
+      }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 
@@ -65,12 +63,12 @@ const likeCard = (req, res, next) => {
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        next(err);
-      } else if (err.name === 'CastError') {
-        next('Переданы некорректные данные для постановки лайка', ERROR_CODE_BAD_REQUEST);
-      } else {
-        next('Что-то пошло не так', ERROR_CODE_DEFAULT);
+        return next(err);
       }
+      if (err.name === 'CastError') {
+        return next('Переданы некорректные данные для постановки лайка', ERROR_CODE_BAD_REQUEST);
+      }
+      return next('Что-то пошло не так', ERROR_CODE_DEFAULT);
     });
 };
 
@@ -86,12 +84,12 @@ const dislikeCard = (req, res, next) => {
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        next(err);
-      } else if (err.name === 'CastError') {
-        next(new ErrorState('Переданы некорректные данные для снятия лайка', ERROR_CODE_BAD_REQUEST));
-      } else {
-        next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+        return next(err);
       }
+      if (err.name === 'CastError') {
+        return next(new ErrorState('Переданы некорректные данные для снятия лайка', ERROR_CODE_BAD_REQUEST));
+      }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 
