@@ -46,4 +46,12 @@ const userSchema = new mongoose.Schema({
   },
 }, { versionKey: false });
 
+function deleteVisiblePassword() {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+}
+
+userSchema.methods.toJSON = deleteVisiblePassword;
+
 module.exports = mongoose.model('user', userSchema);

@@ -12,7 +12,7 @@ const handleError = (err, req, res, next) => {
   res.status(statusCode).send({
     message: statusCode === ERROR_CODE_DEFAULT ? 'Произошла ошибка сервера' : message,
   });
-  next();
+  return next();
 };
 
 module.exports = { ErrorState, handleError };

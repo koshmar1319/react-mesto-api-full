@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { Joi, celebrate } = require('celebrate');
+const { Joi, celebrate, errors } = require('celebrate');
 const { ERROR_CODE_NOT_FOUND } = require('./utils/constants');
 const { createUser, login } = require('./controllers/users');
 const { handleError, ErrorState } = require('./middlewares/errors');
@@ -46,6 +46,8 @@ app.use('/', cardsRouter);
 app.use((req, res, next) => {
   next(new ErrorState('Указанный путь не существует', ERROR_CODE_NOT_FOUND));
 });
+
+app.use(errors());
 
 app.use(handleError);
 

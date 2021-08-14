@@ -58,8 +58,12 @@ const createUser = (req, res, next) => {
     returnScore: false,
   });
 
-  if (!validEmail || !validPassword) {
-    return next(new ErrorState('Некорректная электронная почта или пароль', ERROR_CODE_BAD_REQUEST));
+  if (!validEmail) {
+    return next(new ErrorState('Некорректная электронная почта', ERROR_CODE_BAD_REQUEST));
+  }
+
+  if (!validPassword) {
+    return next(new ErrorState('Некорректный пароль! Пароль не может быть меньше 4 знаков! Также пароль должен содержать буквы верхнего и нижнего регистра, цифры и символы', ERROR_CODE_BAD_REQUEST));
   }
 
   const hashPassword = bcrypt.hashSync(password, 10);
