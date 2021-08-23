@@ -1,3 +1,4 @@
+const { JWT_SECRET } = process.env;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
@@ -151,7 +152,7 @@ const login = (req, res, next) => {
             const error = new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
             throw error;
           }
-          const token = jwt.sign({ _id: user._id }, 'secret', { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
           res.send({ token });
         })
         .catch((err) => {
