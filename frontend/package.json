@@ -24,7 +24,7 @@
     "type": "git",
     "url": "git+https://github.com/koshmar1319/react-mesto-auth.git"
   },
-  "homepage": "https://koshmar1319.github.io/react-mesto-auth",
+  "homepage": ".",
   "eslintConfig": {
     "extends": [
       "react-app",
