@@ -1,0 +1,10 @@
+.header__burger-line {
+  width: 24px;
+  height: 3px;
+  margin-top: 6px;
+  background-color: #fff;
+}
+
+.header__burger-line:first-child {
+  margin-top: 0;
+}

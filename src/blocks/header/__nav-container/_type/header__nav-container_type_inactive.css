@@ -1,0 +1,5 @@
+@media (max-width: 480px) {
+  .header__nav-container_type_inactive {
+    display: none;
+  }
+}
