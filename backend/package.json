@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/koshmar1319/express-mesto.git"
+    "url": "git+https://github.com/koshmar1319/react-mesto-api-ful"
   },
   "keywords": [],
   "author": "Kirill Komarkov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/koshmar1319/express-mesto/issues"
+    "url": "https://github.com/koshmar1319/react-mesto-api-ful/issues"
   },
-  "homepage": "https://github.com/koshmar1319/express-mesto#readme",
+  "homepage": "https://github.com/koshmar1319/react-mesto-api-ful#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "celebrate": "^15.0.0",
