@@ -1,0 +1,14 @@
+.btn-close_active {
+  display: flex;
+  position: static;
+  right: unset;
+  top: unset;
+}
+
+@media (max-width: 480px) {
+  .btn-close_active {
+    width: 30px;
+    height: 30px;
+    color: transparent;
+  }
+}

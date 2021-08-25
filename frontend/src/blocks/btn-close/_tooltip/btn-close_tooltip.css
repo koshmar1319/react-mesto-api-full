@@ -1,0 +1,6 @@
+@media (max-width: 480px) {
+  .btn-close_tooltip {
+    top: -60px;
+    right: 120px;
+  }
+}

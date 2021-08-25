@@ -1,0 +1,29 @@
+.profile__button_plus {
+  background-color: transparent;
+  display: block;
+  width: 150px;
+  height: 50px;
+  padding: 14px 64px;
+  border: 1px solid #fff;
+  transition: opacity 0.3s;
+  opacity: 1;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.profile__button_plus:hover {
+  opacity: 0.6;
+}
+
+@media (max-width: 740px) {
+  .profile__button_plus {
+    margin-top: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile__button_plus {
+    width: 282px;
+    padding: 17px 0;
+  }
+}
