@@ -1,8 +1,0 @@
-.element__block {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fff;
-  padding: 0 21px 0 15px;
-  border-radius: 0 0 10px 10px;
-}
