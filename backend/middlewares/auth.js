@@ -1,5 +1,5 @@
 const { JWT_SECRET, NODE_ENV } = process.env;
-const jsonwebtoken = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const { ERROR_CODE_UNAUTHORIZED } = require('../utils/constants');
 const { ErrorState } = require('./errors');
 
@@ -22,28 +22,40 @@ const { ErrorState } = require('./errors');
 
 const randomString = 'some-secret-key';
 
+// const auth = (req, res, next) => {
+//   const { jwt } = req.cookies;
+
+//   try {
+//     if (!jwt) {
+//       next(new ErrorState('Пользователь не авторизован', ERROR_CODE_UNAUTHORIZED));
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+
+//   try {
+//     jsonwebtoken.verify(jwt, NODE_ENV === 'production' ? JWT_SECRET : randomString, (err, payload) => {
+//       if (err) {
+//         next(new ErrorState('Пользователь не авторизован', ERROR_CODE_UNAUTHORIZED));
+//       }
+//       req.user = payload;
+//       next();
+//     })
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
 const auth = (req, res, next) => {
-  const { jwt } = req.cookies;
-
+  const token = req.cookies.jwt;
+  const secretKey = NODE_ENV === 'production' ? JWT_SECRET : randomString;
   try {
-    if (!jwt) {
-      next(new ErrorState('Пользователь не авторизован', ERROR_CODE_UNAUTHORIZED));
-    }
+    const payload = jwt.verify(token, secretKey);
   } catch (error) {
-    next(error);
+    next(new ErrorState('Пользователь не авторизован', ERROR_CODE_UNAUTHORIZED));
   }
 
-  try {
-    jsonwebtoken.verify(jwt, NODE_ENV === 'production' ? JWT_SECRET : randomString, (err, payload) => {
-      if (err) {
-        next(new ErrorState('Пользователь не авторизован', ERROR_CODE_UNAUTHORIZED));
-      }
-      req.user = payload;
-      next();
-    })
-  } catch (error) {
-    next(error);
-  }
-};
+  next();
+}
 
 module.exports = auth;
