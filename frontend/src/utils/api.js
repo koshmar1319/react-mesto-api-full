@@ -106,13 +106,16 @@
 
 import { baseUrl } from './utils';
 class Api {
-  constructor( baseUrl ) {
+  constructor(baseUrl) {
     this._baseUrl = baseUrl;
   }
 
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
       credentials: 'include',
+      headers: {
+        "Content-Type": "application/json",
+      },
     }).then(this._showErrorMessage);
   }
 
@@ -133,6 +136,9 @@ class Api {
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
       credentials: 'include',
+      headers: {
+        "Content-Type": "application/json",
+      },
     }).then(this._showErrorMessage);
   }
 
@@ -154,6 +160,9 @@ class Api {
     return fetch(`${this._baseUrl}/cards/${card._id}`, {
       method: "DELETE",
       credentials: 'include',
+      headers: {
+        "Content-Type": "application/json",
+      },
     }).then(this._showErrorMessage);
   }
 
