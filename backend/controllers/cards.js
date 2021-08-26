@@ -8,9 +8,16 @@ const {
 const { ErrorState } = require('../middlewares/errors');
 
 const getAllCards = (req, res, next) => {
-  Card.find({})
-    .then((cards) => res.status(200).send({ data: cards }))
-    .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
+  // Card.find({})
+  //   .then((cards) => res.status(200).send({ data: cards }))
+  //   .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
+
+  try {
+    const cards = Card.find({}).populate(['likes', 'owner']).sort('-createdAt');
+    res.send(cards);
+  } catch (error) {
+    return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+  }
 };
 
 const createCard = (req, res, next) => {
