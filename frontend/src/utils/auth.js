@@ -3,7 +3,7 @@
 import { baseUrl } from "./utils";
 
 class Auth {
-  constructor( baseUrl ) {
+  constructor(baseUrl) {
     this._baseUrl = baseUrl;
   }
 
@@ -40,6 +40,19 @@ class Auth {
         password: password,
         email: email,
       }),
+    }).then(this._checkResponse);
+  }
+
+  logout(email) {
+    return fetch(`${this._baseUrl}/signout`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "email": email
+      })
     }).then(this._checkResponse);
   }
 

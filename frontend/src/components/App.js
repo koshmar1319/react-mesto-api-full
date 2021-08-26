@@ -198,7 +198,7 @@ function App() {
     auth
       .register(data)
       .then((res) => {
-        setUserEmail(res./* data. */email);
+        setUserEmail(res.email);
         setUserPassword(data.password);
         setIsSuccessInfoToolTip(true);
         setInfoToolTipPopupOpen(true);
@@ -212,8 +212,8 @@ function App() {
   function handleLogin(data) {
     auth
       .login(data)
-      .then((res) => {
-        localStorage.setItem("jwt", res.token);
+      .then(() => {
+        // localStorage.setItem("jwt", res.token);
         handleCheckToken();
       })
       .catch(() => {
@@ -223,12 +223,13 @@ function App() {
   }
 
   function handleCheckToken() {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
+    // const jwt = localStorage.getItem("jwt");
+    // if (jwt) {
+    setIsLoading(true);
     auth
       .checkToken(/* jwt */)
       .then((res) => {
-        setUserEmail(res./* data. */email);
+        setUserEmail(res.email);
         setIsLoggedIn(true);
         setIsLoading(false);
         history.push("/");
@@ -239,20 +240,27 @@ function App() {
           setInfoToolTipPopupOpen(true);
         }
       });
-    } else {
-      setIsLoading(false);
-      return;
-    }
+    // } else {
+    //   setIsLoading(false);
+    //   return;
+    // }
   }
 
   function handleSignOut() {
-    setIsLoggedIn(false);
-    history.push("/sign-in");
-    localStorage.removeItem("jwt");
-    setUserEmail("");
-    setUserPassword("");
-    setIsSuccessInfoToolTip(null);
-    setIsLoading(false);
+    auth
+      .logout(userEmail)
+      .then(() => {
+        setIsLoggedIn(null);
+        history.push("/sign-in");
+        setUserEmail("");
+        setUserPassword("");
+        setIsSuccessInfoToolTip(null);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsSuccessInfoToolTip(false);
+        setInfoToolTipPopupOpen(true);
+      })
   }
 
   return (
