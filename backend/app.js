@@ -5,7 +5,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { Joi, celebrate, errors } = require('celebrate');
 const { ERROR_CODE_NOT_FOUND } = require('./utils/constants');
-const { createUser, login } = require('./controllers/users');
+const { createUser, login, logout } = require('./controllers/users');
 const { handleError, ErrorState } = require('./middlewares/errors');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -79,6 +79,8 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(4),
   }),
 }), createUser);
+
+app.delete('/logout', logout);
 
 app.use(auth);
 app.use('/', usersRouter);

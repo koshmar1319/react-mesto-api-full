@@ -1,4 +1,4 @@
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, NODE_ENV } = process.env;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
@@ -11,6 +11,8 @@ const {
   ERROR_CODE_CONFLICT,
 } = require('../utils/constants');
 const { ErrorState } = require('../middlewares/errors');
+
+const randomString = 'some-secret-key';
 
 const getAllUsers = (req, res, next) => {
   User.find({})
@@ -152,8 +154,16 @@ const login = (req, res, next) => {
             const error = new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
             throw error;
           }
-          const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-          res.send({ token });
+          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : randomString, { expiresIn: '7d' });
+          // res.send({ token });
+          res.status(200).cookie('jwt', token, {
+            maxAge: 3600000 * 24 * 7,
+            httpOnly: true,
+            domain: '.nomoredomains.monster',
+            secure: true,
+            path: '/',
+          })
+            .send({ message: 'Вы успешно авторизовались!' })
         })
         .catch((err) => {
           if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
@@ -170,6 +180,41 @@ const login = (req, res, next) => {
       return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
+
+const logout = (req, res, next) => {
+  const { email } = req.body;
+  const { jwt } = req.cookies;
+
+  let verifiedUser = null;
+
+  if (!jwt) {
+    return next(new ErrorState('Некорректные данные авторизации!', ERROR_CODE_UNAUTHORIZED));
+  }
+
+  const user = User.findOne({ email });
+
+  if (!user) {
+    throw new ErrorState('Пользователь не существует', ERROR_CODE_UNAUTHORIZED);
+  }
+
+  jwt.verify(jwt, NODE_ENV === 'production' ? JWT_SECRET : randomString, (err, payload) => {
+    if (err) {
+      throw new ErrorState('Некорректные данные авторизации!', ERROR_CODE_UNAUTHORIZED);
+    }
+    verifiedUser = payload;
+
+    if (user._id.toHexString() !== verifiedUser._id) {
+      throw new ErrorState('Некорректные данные авторизации!', ERROR_CODE_UNAUTHORIZED);
+    }
+  });
+  res.status(200).clearCookie('jwt', {
+    httpOnly: true,
+    domain: '.nomoredomains.monster',
+    secure: true,
+    path: '/',
+  })
+    .send({ message: 'Вы вышли из системы!' })
+}
 
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user)
@@ -189,5 +234,5 @@ const getCurrentUser = (req, res, next) => {
 };
 
 module.exports = {
-  getAllUsers, getUser, createUser, updateUser, updateUserAvatar, login, getCurrentUser,
+  getAllUsers, getUser, createUser, updateUser, updateUserAvatar, login, logout, getCurrentUser,
 };
