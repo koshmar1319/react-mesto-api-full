@@ -27,12 +27,14 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 const allowedCors = [
   'https://kshmr-mesto.nomoredomains.monster',
   'http://kshmr-mesto.nomoredomains.monster',
+  'http://localhost:3000',
 ];
 
 app.use((req, res, next) => {
   const { origin } = req.headers;
   if (allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', true);
   }
 
   const { method } = req;
@@ -44,8 +46,9 @@ app.use((req, res, next) => {
   if (method === 'OPTIONS') {
     res.header('Access-Control-Allow-Methods', ALLOWED_METHODS);
     res.header('Access-Control-Allow-Headers', requestHeaders);
-    res.header('Access-Control-Allow-Credentials', true);
-    res.status(200).send();
+    // res.header('Access-Control-Allow-Credentials', true);
+    // res.status(200).send();
+    return res.end();
   }
 
   next();
