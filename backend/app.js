@@ -24,6 +24,33 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
+const allowedCors = [
+  'https://kshmr-mesto.nomoredomains.monster',
+  'http://kshmr-mesto.nomoredomains.monster',
+];
+
+app.use((req, res, next) => {
+  const { origin } = req.headers;
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+
+  const { method } = req;
+
+  const ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+
+  const requestHeaders = req.headers['access-control-request-headers'];
+
+  if (method === 'OPTIONS') {
+    req.header('Access-Control-Allow-Methods', ALLOWED_METHODS);
+    req.header('Access-Control-Allow-Headers', requestHeaders);
+    req.header('Access-Control-Allow-Credentials', true);
+    res.status(200).send();
+  }
+
+  next();
+});
+
 app.use(express.json());
 app.use(requestLogger);
 
