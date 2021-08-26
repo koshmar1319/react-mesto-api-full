@@ -223,24 +223,26 @@ function App() {
   }
 
   function handleCheckToken() {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      auth
-        .checkToken(jwt)
-        .then((res) => {
-          setUserEmail(res.data.email);
-          setIsLoggedIn(true);
-          setIsLoading(false);
-          history.push("/");
-        })
-        .catch(() => {
+    // const jwt = localStorage.getItem("jwt");
+    // if (jwt) {
+    auth
+      .checkToken(/* jwt */)
+      .then((res) => {
+        setUserEmail(res./* data. */email);
+        setIsLoggedIn(true);
+        setIsLoading(false);
+        history.push("/");
+      })
+      .catch(() => {
+        if (isLoggedIn !== null) {
           setIsSuccessInfoToolTip(false);
           setInfoToolTipPopupOpen(true);
-        });
-    } else {
-      setIsLoading(false);
-      return;
-    }
+        }
+      });
+    // } else {
+    //   setIsLoading(false);
+    //   return;
+    // }
   }
 
   function handleSignOut() {
