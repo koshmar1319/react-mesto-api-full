@@ -198,7 +198,7 @@ function App() {
     auth
       .register(data)
       .then((res) => {
-        setUserEmail(res.data.email);
+        setUserEmail(res./* data. */email);
         setUserPassword(data.password);
         setIsSuccessInfoToolTip(true);
         setInfoToolTipPopupOpen(true);
@@ -213,7 +213,7 @@ function App() {
     auth
       .login(data)
       .then((res) => {
-        localStorage.setItem("jwt", res.token);
+        // localStorage.setItem("jwt", res.token);
         handleCheckToken();
       })
       .catch(() => {
