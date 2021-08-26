@@ -231,7 +231,7 @@ function App() {
       .then((res) => {
         setUserEmail(res.email);
         setIsLoggedIn(true);
-        setIsLoading(false);
+        // setIsLoading(false);
         history.push("/");
       })
       .catch(() => {
@@ -239,7 +239,10 @@ function App() {
           setIsSuccessInfoToolTip(false);
           setInfoToolTipPopupOpen(true);
         }
-      });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      })
     // } else {
     //   setIsLoading(false);
     //   return;
