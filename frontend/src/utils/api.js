@@ -103,7 +103,7 @@
 //=========================================
 
 class Api {
-  constructor(baseUrl) {
+  constructor({ baseUrl }) {
     this._baseUrl = baseUrl;
   }
 
