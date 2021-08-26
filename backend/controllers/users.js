@@ -42,39 +42,39 @@ const createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
 
-  const validEmail = validator.isEmail(email, {
-    allow_display_name: false,
-    require_display_name: false,
-    allow_utf8_local_part: true,
-    require_tld: true,
-    allow_ip_domain: false,
-    domain_specific_validation: false,
-    blacklisted_chars: '',
-  });
+  // const validEmail = validator.isEmail(email, {
+  //   allow_display_name: false,
+  //   require_display_name: false,
+  //   allow_utf8_local_part: true,
+  //   require_tld: true,
+  //   allow_ip_domain: false,
+  //   domain_specific_validation: false,
+  //   blacklisted_chars: '',
+  // });
 
-  const validPassword = validator.isStrongPassword(password, {
-    minLength: 4,
-    minLowercase: 1,
-    minUppercase: 1,
-    minNumbers: 1,
-    minSymbols: 1,
-    returnScore: false,
-  });
+  // const validPassword = validator.isStrongPassword(password, {
+  //   minLength: 4,
+  //   minLowercase: 1,
+  //   minUppercase: 1,
+  //   minNumbers: 1,
+  //   minSymbols: 1,
+  //   returnScore: false,
+  // });
 
-  if (!validEmail) {
-    return next(new ErrorState('Некорректная электронная почта', ERROR_CODE_BAD_REQUEST));
-  }
+  // if (!validEmail) {
+  //   return next(new ErrorState('Некорректная электронная почта', ERROR_CODE_BAD_REQUEST));
+  // }
 
-  if (!validPassword) {
-    return next(new ErrorState('Некорректный пароль! Пароль не может быть меньше 4 знаков! Также пароль должен содержать буквы верхнего и нижнего регистра, цифры и символы', ERROR_CODE_BAD_REQUEST));
-  }
+  // if (!validPassword) {
+  //   return next(new ErrorState('Некорректный пароль! Пароль не может быть меньше 4 знаков! Также пароль должен содержать буквы верхнего и нижнего регистра, цифры и символы', ERROR_CODE_BAD_REQUEST));
+  // }
 
   const hashPassword = bcrypt.hashSync(password, 10);
 
   return User.create({
     name, about, avatar, email, password: hashPassword,
   })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send({ data: user.toJSON() }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new ErrorState('Переданы некорректные данные при создании пользователя', ERROR_CODE_BAD_REQUEST));
