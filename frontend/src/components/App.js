@@ -227,7 +227,7 @@ function App() {
     // if (jwt) {
     setIsLoading(true);
     auth
-      .checkToken(/* jwt */)
+      .checkToken() /* jwt */
       .then((res) => {
         setUserEmail(res.email);
         setIsLoggedIn(true);

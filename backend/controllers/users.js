@@ -155,7 +155,6 @@ const login = (req, res, next) => {
             throw error;
           }
           const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : randomString, { expiresIn: '7d' });
-          // res.send({ token });
           res.status(200).cookie('jwt', token, {
             maxAge: 3600000 * 24 * 7,
             httpOnly: true,

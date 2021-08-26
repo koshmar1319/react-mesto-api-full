@@ -22,10 +22,7 @@ class Auth {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        password: password,
-        email: email,
-      }),
+      body: JSON.stringify({ password, email }),
     }).then(this._checkResponse);
   }
 
@@ -36,15 +33,12 @@ class Auth {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        password: password,
-        email: email,
-      }),
+      body: JSON.stringify({ password, email }),
     }).then(this._checkResponse);
   }
 
   logout(email) {
-    return fetch(`${this._baseUrl}/signout`, {
+    return fetch(`${this._baseUrl}/logout`, {
       method: "DELETE",
       credentials: "include",
       headers: {
@@ -52,17 +46,16 @@ class Auth {
       },
       body: JSON.stringify({
         "email": email
-      })
+      }),
     }).then(this._checkResponse);
   }
 
-  checkToken(/* token */) {
+  checkToken() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${token}`,
       },
     }).then(this._checkResponse);
   }
