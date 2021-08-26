@@ -8,7 +8,8 @@ const auth = (req, res, next) => {
   if (!authorization) {
     next(new ErrorState('Пользователь не авторизован', ERROR_CODE_UNAUTHORIZED));
   }
-  const token = authorization.split(' ')[1];
+  // const token = authorization.split(' ')[1];
+  const token = authorization.replace('Bearer ', '');
   let payload;
   try {
     payload = jwt.verify(token, JWT_SECRET);

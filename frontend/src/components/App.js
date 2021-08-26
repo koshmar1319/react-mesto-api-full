@@ -115,11 +115,11 @@ function App() {
     setIsLoading(true);
     api
       .setUserInfo(data)
-      .then((newCard) => {
+      .then((newUser) => {
         setCurrentUser({
           ...currentUser,
-          name: newCard.name,
-          about: newCard.about,
+          name: newUser.name,
+          about: newUser.about,
         });
         closeAllPopups();
       })
