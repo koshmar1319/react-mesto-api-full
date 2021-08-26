@@ -42,9 +42,9 @@ app.use((req, res, next) => {
   const requestHeaders = req.headers['access-control-request-headers'];
 
   if (method === 'OPTIONS') {
-    req.header('Access-Control-Allow-Methods', ALLOWED_METHODS);
-    req.header('Access-Control-Allow-Headers', requestHeaders);
-    req.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Methods', ALLOWED_METHODS);
+    res.header('Access-Control-Allow-Headers', requestHeaders);
+    res.header('Access-Control-Allow-Credentials', true);
     res.status(200).send();
   }
 
