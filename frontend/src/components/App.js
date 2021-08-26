@@ -213,7 +213,7 @@ function App() {
     auth
       .login(data)
       .then((res) => {
-        // localStorage.setItem("jwt", res.token);
+        localStorage.setItem("jwt", res.token);
         handleCheckToken();
       })
       .catch(() => {
@@ -223,8 +223,8 @@ function App() {
   }
 
   function handleCheckToken() {
-    // const jwt = localStorage.getItem("jwt");
-    // if (jwt) {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
     auth
       .checkToken(/* jwt */)
       .then((res) => {
@@ -239,10 +239,10 @@ function App() {
           setInfoToolTipPopupOpen(true);
         }
       });
-    // } else {
-    //   setIsLoading(false);
-    //   return;
-    // }
+    } else {
+      setIsLoading(false);
+      return;
+    }
   }
 
   function handleSignOut() {
