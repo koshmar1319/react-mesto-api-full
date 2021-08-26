@@ -9,23 +9,16 @@ const { ErrorState } = require('../middlewares/errors');
 
 const getAllCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.status(200).send({ data: cards }))
+    .then((cards) => res.send(cards))
     .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
-
-  // try {
-  //   const cards = Card.find({}).populate(['likes', 'owner']).sort('-createdAt');
-  //   res.send(cards);
-  // } catch (error) {
-  //   return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-  // }
 };
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
-  const owner = req.user._id;
+  // const owner = req.user._id;
 
-  Card.create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
+  Card.create({ name, link, owner: req.user._id })
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new ErrorState('Переданы некорректные данные при создании карточки', ERROR_CODE_BAD_REQUEST));

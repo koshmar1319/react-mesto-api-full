@@ -16,7 +16,7 @@ const randomString = 'some-secret-key';
 
 const getAllUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send({ data: users }))
+    .then((users) => res.send(users))
     .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
 };
 
@@ -216,11 +216,12 @@ const logout = (req, res, next) => {
 }
 
 const getCurrentUser = (req, res, next) => {
-  User.findById(req.user)
+  const { user } = req;
+  User.findById(user._id)
     .orFail(() => {
       next(new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND));
     })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
         return next(err);
