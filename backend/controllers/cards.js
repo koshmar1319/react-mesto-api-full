@@ -9,7 +9,7 @@ const { ErrorState } = require('../middlewares/errors');
 
 const getAllCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send(cards))
+    .then((cards) => res.status(200).send({ data: cards }))
     .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
 };
 
