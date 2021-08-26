@@ -102,8 +102,9 @@
 
 //=========================================
 
+import { baseUrl } from './utils';
 class Api {
-  constructor({ baseUrl }) {
+  constructor( baseUrl ) {
     this._baseUrl = baseUrl;
   }
 
@@ -182,8 +183,6 @@ class Api {
   };
 }
 
-const api = new Api({
-  baseUrl: "http://api.kshmr-mesto.nomoredomains.monster",
-});
+const api = new Api(baseUrl);
 
 export default api;
