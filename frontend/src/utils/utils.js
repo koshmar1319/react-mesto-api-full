@@ -4,8 +4,10 @@
 
 // export { authSettings };
 
-const authSettings = {
-  baseUrl: "http://api.kshmr-mesto.nomoredomains.monster",
-};
+// const authSettings = {
+//   baseUrl: "http://api.kshmr-mesto.nomoredomains.monster",
+// };
 
-export { authSettings };
+const baseUrl = "http://api.kshmr-mesto.nomoredomains.monster";
+
+export { baseUrl };
