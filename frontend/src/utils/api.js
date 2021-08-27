@@ -111,13 +111,20 @@ class Api {
     this._baseUrl = baseUrl;
   }
 
+  _checkResponse(res) {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(res.json());
+  };
+
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
       credentials: 'include',
       headers: {
         "Content-Type": "application/json",
       },
-    }).then(this._showErrorMessage);
+    }).then(this._checkResponse);
   }
 
   setUserInfo(data) {
@@ -131,7 +138,7 @@ class Api {
         name: data.name,
         about: data.about,
       }),
-    }).then(this._showErrorMessage);
+    }).then(this._checkResponse);
   }
 
   getInitialCards() {
@@ -140,7 +147,7 @@ class Api {
       headers: {
         "Content-Type": "application/json",
       },
-    }).then(this._showErrorMessage);
+    }).then(this._checkResponse);
   }
 
   addCard(card) {
@@ -154,7 +161,7 @@ class Api {
         name: card.name,
         link: card.link,
       }),
-    }).then(this._showErrorMessage);
+    }).then(this._checkResponse);
   }
 
   deleteCard(card) {
@@ -164,7 +171,7 @@ class Api {
       headers: {
         "Content-Type": "application/json",
       },
-    }).then(this._showErrorMessage);
+    }).then(this._checkResponse);
   }
 
   setUserAvatar(avatar) {
@@ -177,22 +184,15 @@ class Api {
       body: JSON.stringify({
         avatar: avatar,
       }),
-    }).then(this._showErrorMessage);
+    }).then(this._checkResponse);
   }
 
   changeLikeCardStatus(card, likeCardStatus) {
     return fetch(`${this._baseUrl}/cards/${card._id}/likes`, {
       method: likeCardStatus ? "PUT" : "DELETE",
       credentials: 'include',
-    }).then(this._showErrorMessage);
+    }).then(this._checkResponse);
   }
-
-  _showErrorMessage = (res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка ${res.status}`);
-  };
 }
 
 // const api = new Api(baseUrl);
