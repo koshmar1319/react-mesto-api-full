@@ -4,6 +4,7 @@ dotenv.config();
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
 const { Joi, celebrate, errors } = require('celebrate');
 const { ERROR_CODE_NOT_FOUND } = require('./utils/constants');
 const { createUser, login, logout } = require('./controllers/users');
@@ -57,6 +58,7 @@ app.use((req, res, next) => {
 
 app.use(helmet());
 app.use(express.json());
+app.use(cookieParser());
 app.use(requestLogger);
 
 app.get('/crash-test', () => {
