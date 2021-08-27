@@ -53,6 +53,10 @@ function App() {
       .then(([userData, cards]) => {
         setCurrentUser(userData);
         setCards(cards);
+
+        setIsLoggedIn(true);
+        setUserEmail(userData.email);
+        history.push('/');
       })
       .catch((err) => {
         console.log(err);
