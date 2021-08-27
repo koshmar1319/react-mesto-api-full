@@ -141,45 +141,79 @@ const updateUserAvatar = (req, res, next) => {
     });
 };
 
+// const login = (req, res, next) => {
+//   const { email, password } = req.body;
+//   User.findOne({ email }).select('+password')
+//     .orFail(() => {
+//       throw new ErrorState('Пользователь не существует', ERROR_CODE_UNAUTHORIZED);
+//     })
+//     .then((user) => {
+//       bcrypt.compare(password, user.password)
+//         .then((matched) => {
+//           if (!matched) {
+//             const error = new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
+//             throw error;
+//           }
+//           const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : randomString, { expiresIn: '7d' });
+//           res.status(200).cookie('jwt', token, {
+//             maxAge: 3600000 * 24 * 7,
+//             httpOnly: true,
+//             domain: '.nomoredomains.monster',
+//             secure: true,
+//             path: '/',
+//             sameSite: 'None',
+//           })
+//             .send({ message: 'Вы успешно авторизовались!' })
+//         })
+//         .catch((err) => {
+//           if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
+//             next(err);
+//           } else {
+//             next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+//           }
+//         });
+//     })
+//     .catch((err) => {
+//       if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
+//         return next(err);
+//       }
+//       return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+//     });
+// };
+
 const login = (req, res, next) => {
-  const { email, password } = req.body;
-  User.findOne({ email }).select('+password')
-    .orFail(() => {
-      throw new ErrorState('Пользователь не существует', ERROR_CODE_UNAUTHORIZED);
-    })
-    .then((user) => {
-      bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            const error = new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
-            throw error;
-          }
-          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : randomString, { expiresIn: '7d' });
-          res.status(200).cookie('jwt', token, {
-            maxAge: 3600000 * 24 * 7,
-            httpOnly: true,
-            domain: '.nomoredomains.monster',
-            secure: true,
-            path: '/',
-            sameSite: 'None',
-          })
-            .send({ message: 'Вы успешно авторизовались!' })
-        })
-        .catch((err) => {
-          if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
-            next(err);
-          } else {
-            next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-          }
-        });
-    })
-    .catch((err) => {
-      if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
-        return next(err);
-      }
-      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-    });
-};
+  try {
+    const { email, password } = req.body;
+    const user = User.findOne({ email }).select('+password');
+
+    if (!user) {
+      throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
+    }
+
+    const isMatched = bcrypt.compare(password, user.password);
+
+    if (!isMatched) {
+      throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
+    } else {
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : randomString,
+        { expiresIn: '7d' },
+      );
+      res.status(200).cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        domain: '.nomoredomains.monster',
+        secure: true,
+        path: '/',
+        sameSite: 'None',
+      })
+        .send({ message: 'Вы успешно авторизовались!' });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
 
 const logout = (req, res, next) => {
   const { email } = req.body;
