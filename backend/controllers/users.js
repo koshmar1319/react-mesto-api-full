@@ -161,6 +161,7 @@ const login = (req, res, next) => {
             domain: '.nomoredomains.monster',
             secure: true,
             path: '/',
+            sameSite: 'None',
           })
             .send({ message: 'Вы успешно авторизовались!' })
         })
