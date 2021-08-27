@@ -12,7 +12,7 @@ const {
 } = require('../utils/constants');
 const { ErrorState } = require('../middlewares/errors');
 
-const randomString = 'some-secret-key';
+const randomString = 'secret';
 
 const getAllUsers = (req, res, next) => {
   User.find({})

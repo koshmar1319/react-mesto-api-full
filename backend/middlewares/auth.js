@@ -20,7 +20,7 @@ const { ErrorState } = require('./errors');
 //   return next();
 // };
 
-const randomString = 'some-secret-key';
+const randomString = 'secret';
 
 // const auth = (req, res, next) => {
 //   const { jwt } = req.cookies;
@@ -51,6 +51,7 @@ const auth = (req, res, next) => {
   const secretKey = NODE_ENV === 'production' ? JWT_SECRET : randomString;
   try {
     const payload = jwt.verify(token, secretKey);
+    req.user = payload;
   } catch (error) {
     next(new ErrorState('Пользователь не авторизован', ERROR_CODE_UNAUTHORIZED));
   }
