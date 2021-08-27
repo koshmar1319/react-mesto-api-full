@@ -37,8 +37,8 @@ function App() {
 
   const [isLoading, setIsLoading] = React.useState(true);
 
-  // const [userEmail, setUserEmail] = React.useState("");
-  const [userEmail, setUserEmail] = React.useState(null);
+  const [userEmail, setUserEmail] = React.useState("");
+  // const [userEmail, setUserEmail] = React.useState(null);
   const [userPassword, setUserPassword] = React.useState("");
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(null);
@@ -55,14 +55,14 @@ function App() {
         setCurrentUser(userData);
         setCards(cards);
 
-        setUserEmail(userData.email);
-        setIsLoggedIn(true);
-        history.push('/');
+        // setUserEmail(userData.email);
+        // setIsLoggedIn(true);
+        // history.push('/');
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [isLoggedIn]);
 
   function handleEditProfileClick() {
     setIsLoading(false);
