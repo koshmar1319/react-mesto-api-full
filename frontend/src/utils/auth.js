@@ -1,6 +1,6 @@
 
 
-import { baseUrl } from "./utils";
+// import { baseUrl } from "./utils";
 
 class Auth {
   constructor(baseUrl) {
@@ -61,5 +61,5 @@ class Auth {
   }
 }
 
-const auth = new Auth(baseUrl);
+const auth = new Auth("http://api.kshmr-mesto.nomoredomains.monster");
 export default auth;
