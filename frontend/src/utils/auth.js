@@ -3,7 +3,7 @@
 // import { baseUrl } from "./utils";
 
 class Auth {
-  constructor(baseUrl) {
+  constructor({ baseUrl }) {
     this._baseUrl = baseUrl;
   }
 
@@ -11,7 +11,7 @@ class Auth {
     if (res.ok) {
       return res.json();
     } else {
-      return Promise.reject(res.json());
+      return Promise.reject(`Ошибка ${res.status}`);
     }
   }
 
@@ -61,5 +61,7 @@ class Auth {
   }
 }
 
-const auth = new Auth("http://api.kshmr-mesto.nomoredomains.monster");
+const auth = new Auth({
+  baseUrl: "http://api.kshmr-mesto.nomoredomains.monster",
+});
 export default auth;
