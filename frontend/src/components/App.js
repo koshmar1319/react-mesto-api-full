@@ -37,7 +37,8 @@ function App() {
 
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const [userEmail, setUserEmail] = React.useState("");
+  // const [userEmail, setUserEmail] = React.useState("");
+  const [userEmail, setUserEmail] = React.useState(null);
   const [userPassword, setUserPassword] = React.useState("");
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(null);
@@ -54,8 +55,8 @@ function App() {
         setCurrentUser(userData);
         setCards(cards);
 
-        setIsLoggedIn(true);
         setUserEmail(userData.email);
+        setIsLoggedIn(true);
         history.push('/');
       })
       .catch((err) => {
