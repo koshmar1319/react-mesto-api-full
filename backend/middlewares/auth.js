@@ -27,7 +27,7 @@ const auth = (req, res, next) => {
 
   try {
     if (!jwt) {
-      next(new ErrorState('Пользователь не авторизован', ERROR_CODE_UNAUTHORIZED));
+      throw new ErrorState('Пользователь не авторизован', ERROR_CODE_UNAUTHORIZED);
     }
   } catch (error) {
     next(error);
@@ -40,7 +40,7 @@ const auth = (req, res, next) => {
       }
       req.user = payload;
       next();
-    })
+    });
   } catch (error) {
     next(error);
   }

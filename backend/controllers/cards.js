@@ -7,20 +7,20 @@ const {
 } = require('../utils/constants');
 const { ErrorState } = require('../middlewares/errors');
 
-const getAllCards = (req, res, next) => {
-  Card.find({})
-    .then((cards) => res.status(200).send({ data: cards }))
-    .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
-};
-
 // const getAllCards = (req, res, next) => {
-//   try {
-//     const cards = Card.find({}).populate(['likes', 'owner']).sort('-createdAt');
-//     res.send(cards);
-//   } catch (error) {
-//     next(error);
-//   }
-// }
+//   Card.find({})
+//     .then((cards) => res.status(200).send({ data: cards }))
+//     .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
+// };
+
+const getAllCards = (req, res, next) => {
+  try {
+    const cards = Card.find({}).populate(['likes', 'owner']).sort('-createdAt');
+    res.send(cards);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
