@@ -95,7 +95,7 @@ app.post('/signup', celebrate({
 
 app.delete('/logout', logout);
 
-app.use(auth);
+// app.use(auth);
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
 
