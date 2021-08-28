@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const { Joi, celebrate, errors } = require('celebrate');
@@ -25,6 +26,15 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
+
+app.use(cors({
+  origin: [
+    'https://kshmr-mesto.nomoredomains.monster',
+    'http://kshmr-mesto.nomoredomains.monster',
+    'http://localhost:3000',
+  ],
+  credentials: true,
+}));
 
 // const allowedCors = [
 //   'https://kshmr-mesto.nomoredomains.monster',
