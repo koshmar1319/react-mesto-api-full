@@ -1,9 +1,9 @@
 
 
-// import { baseUrl } from "./utils";
+import { baseUrl } from "./utils";
 
 class Auth {
-  constructor({ baseUrl }) {
+  constructor( baseUrl ) {
     this._baseUrl = baseUrl;
   }
 
@@ -67,7 +67,5 @@ class Auth {
   }
 }
 
-const auth = new Auth({
-  baseUrl: "http://api.kshmr-mesto.nomoredomains.monster",
-});
+const auth = new Auth(baseUrl);
 export default auth;

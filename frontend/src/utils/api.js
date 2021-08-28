@@ -104,10 +104,10 @@
 
 //=========================================
 
-// import { baseUrl } from './utils';
+import { baseUrl } from './utils';
 
 class Api {
-  constructor({ baseUrl }) {
+  constructor( baseUrl ) {
     this._baseUrl = baseUrl;
   }
 
@@ -122,7 +122,6 @@ class Api {
     return fetch(`${this._baseUrl}/users/me`, {
       credentials: 'include',
       headers: {
-        authorization: `Bearer ${localStorage.getItem('jwt')}`,
         "Content-Type": "application/json",
       },
     }).then(this._checkResponse);
@@ -147,7 +146,6 @@ class Api {
       credentials: 'include',
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${localStorage.getItem('jwt')}`,
       },
     }).then(this._checkResponse);
   }
@@ -199,8 +197,6 @@ class Api {
 
 // const api = new Api(baseUrl);
 
-const api = new Api({
-  baseUrl: "http://api.kshmr-mesto.nomoredomains.monster",
-});
+const api = new Api(baseUrl);
 
 export default api;
