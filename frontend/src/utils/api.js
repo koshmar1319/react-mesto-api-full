@@ -121,9 +121,6 @@ class Api {
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
       credentials: 'include',
-      headers: {
-        "Content-Type": "application/json",
-      },
     }).then(this._checkResponse);
   }
 
@@ -144,9 +141,6 @@ class Api {
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
       credentials: 'include',
-      headers: {
-        "Content-Type": "application/json",
-      },
     }).then(this._checkResponse);
   }
 
@@ -168,9 +162,6 @@ class Api {
     return fetch(`${this._baseUrl}/cards/${card._id}`, {
       method: "DELETE",
       credentials: 'include',
-      headers: {
-        "Content-Type": "application/json",
-      },
     }).then(this._checkResponse);
   }
 
@@ -189,7 +180,7 @@ class Api {
 
   changeLikeCardStatus(card, likeCardStatus) {
     return fetch(`${this._baseUrl}/cards/${card._id}/likes`, {
-      method: likeCardStatus ? "PUT" : "DELETE",
+      method: (likeCardStatus ? "PUT" : "DELETE"),
       credentials: 'include',
     }).then(this._checkResponse);
   }
