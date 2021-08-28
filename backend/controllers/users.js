@@ -95,15 +95,15 @@ const getUser = (req, res, next) => {
 //     });
 // };
 
-const createUser = (req, res, next) => {
+const createUser = async (req, res, next) => {
   try {
     const {
       name, about, avatar, email, password,
     } = req.body;
 
-    const hash = bcrypt.hash(password, 10);
+    const hash = await bcrypt.hash(password, 10);
 
-    const user = User.create({
+    const user = await User.create({
       name, about, avatar, email, password: hash,
     });
 
@@ -210,16 +210,16 @@ const updateUserAvatar = (req, res, next) => {
 //     });
 // };
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
       throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
     }
 
-    const isMatched = bcrypt.compare(password, user.password);
+    const isMatched = await bcrypt.compare(password, user.password);
 
     if (!isMatched) {
       throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
@@ -243,7 +243,7 @@ const login = (req, res, next) => {
   }
 };
 
-const logout = (req, res, next) => {
+const logout = async (req, res, next) => {
   try {
     const { email } = req.body;
     const { jwt } = req.cookies;
@@ -254,7 +254,7 @@ const logout = (req, res, next) => {
       throw new ErrorState('Некорректные данные авторизации!', ERROR_CODE_UNAUTHORIZED);
     }
 
-    const user = User.findOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user) {
       throw new ErrorState('Пользователь не существует', ERROR_CODE_UNAUTHORIZED);
@@ -301,10 +301,10 @@ const logout = (req, res, next) => {
 //     });
 // };
 
-const getCurrentUser = (req, res, next) => {
+const getCurrentUser = async (req, res, next) => {
   const { user } = req;
   try {
-    const foundUser = User.findById(user._id);
+    const foundUser = await User.findById(user._id);
     if (!foundUser) throw new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND);
     res.send(foundUser);
   } catch (error) {

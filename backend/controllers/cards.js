@@ -13,9 +13,9 @@ const { ErrorState } = require('../middlewares/errors');
 //     .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
 // };
 
-const getAllCards = (req, res, next) => {
+const getAllCards = async (req, res, next) => {
   try {
-    const cards = Card.find({}).populate(['likes', 'owner']).sort('-createdAt');
+    const cards = await Card.find({}).populate(['likes', 'owner']).sort('-createdAt');
     res.send(cards);
   } catch (error) {
     next(error);
