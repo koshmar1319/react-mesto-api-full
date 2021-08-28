@@ -226,7 +226,7 @@ function App() {
   function handleCheckToken() {
     // const jwt = localStorage.getItem("jwt");
     // if (jwt) {
-    // setIsLoading(true);
+    setIsLoading(true);
     auth
       .checkToken() /* jwt */
       .then((res) => {
@@ -236,11 +236,11 @@ function App() {
         history.push("/");
       })
       .catch((err) => {
-        // if (isLoggedIn !== null) {
-        //   setIsSuccessInfoToolTip(false);
-        //   setInfoToolTipPopupOpen(true);
-        // }
-        console.log(err);
+        setIsLoading(false);
+        if (isLoggedIn !== null) {
+          setIsSuccessInfoToolTip(false);
+          setInfoToolTipPopupOpen(true);
+        }
       })
       // .finally(() => {
       //   setIsLoading(false);
