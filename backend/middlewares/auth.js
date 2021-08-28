@@ -1,4 +1,4 @@
-const { JWT_SECRET, NODE_ENV } = process.env;
+
 const jsonwebtoken = require('jsonwebtoken');
 const { ERROR_CODE_UNAUTHORIZED } = require('../utils/constants');
 const { ErrorState } = require('./errors');
@@ -24,6 +24,7 @@ const randomString = 'secret';
 
 const auth = (req, res, next) => {
   const { jwt } = req.cookies;
+  const { JWT_SECRET, NODE_ENV } = process.env;
 
   try {
     if (!jwt) {
