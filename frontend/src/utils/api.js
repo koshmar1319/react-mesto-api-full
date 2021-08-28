@@ -122,6 +122,7 @@ class Api {
     return fetch(`${this._baseUrl}/users/me`, {
       credentials: 'include',
       headers: {
+        authorization: `Bearer ${localStorage.getItem('jwt')}`,
         "Content-Type": "application/json",
       },
     }).then(this._checkResponse);
@@ -146,6 +147,7 @@ class Api {
       credentials: 'include',
       headers: {
         "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem('jwt')}`,
       },
     }).then(this._checkResponse);
   }
