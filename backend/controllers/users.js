@@ -37,74 +37,83 @@ const getUser = (req, res, next) => {
     });
 };
 
-// const createUser = (req, res, next) => {
-//   const {
-//     name, about, avatar, email, password,
-//   } = req.body;
-
-//   const validEmail = validator.isEmail(email, {
-//     allow_display_name: false,
-//     require_display_name: false,
-//     allow_utf8_local_part: true,
-//     require_tld: true,
-//     allow_ip_domain: false,
-//     domain_specific_validation: false,
-//     blacklisted_chars: '',
-//   });
-
-//   const validPassword = validator.isStrongPassword(password, {
-//     minLength: 4,
-//     minLowercase: 1,
-//     minUppercase: 1,
-//     minNumbers: 1,
-//     minSymbols: 1,
-//     returnScore: false,
-//   });
-
-//   if (!validEmail) {
-//     return next(new ErrorState('Некорректная электронная почта', ERROR_CODE_BAD_REQUEST));
-//   }
-
-//   if (!validPassword) {
-//     return next(new ErrorState('Некорректный пароль! Пароль не может быть меньше 4 знаков! Также пароль должен содержать буквы верхнего и нижнего регистра, цифры и символы', ERROR_CODE_BAD_REQUEST));
-//   }
-
-//   const hashPassword = bcrypt.hashSync(password, 10);
-
-//   return User.create({
-//     name, about, avatar, email, password: hashPassword,
-//   })
-//     .then((user) => res.send({ data: user.toJSON() }))
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         return next(new ErrorState('Переданы некорректные данные при создании пользователя', ERROR_CODE_BAD_REQUEST));
-//       }
-//       if (err.name === 'MongoError' && err.code === 11000) {
-//         return next(new ErrorState('Пользователь уже существует', ERROR_CODE_CONFLICT));
-//       }
-//       return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-//     });
-// };
-
 const createUser = (req, res, next) => {
-  try {
-    const {
-      name, about, avatar, email, password,
-    } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-    const hash = bcrypt.hash(password, 10);
+  // const validEmail = validator.isEmail(email, {
+  //   allow_display_name: false,
+  //   require_display_name: false,
+  //   allow_utf8_local_part: true,
+  //   require_tld: true,
+  //   allow_ip_domain: false,
+  //   domain_specific_validation: false,
+  //   blacklisted_chars: '',
+  // });
 
-    const user = User.create({
-      name, about, avatar, email, password: hash,
+  // const validPassword = validator.isStrongPassword(password, {
+  //   minLength: 4,
+  //   minLowercase: 1,
+  //   minUppercase: 1,
+  //   minNumbers: 1,
+  //   minSymbols: 1,
+  //   returnScore: false,
+  // });
+
+  // if (!validEmail) {
+  //   return next(new ErrorState('Некорректная электронная почта', ERROR_CODE_BAD_REQUEST));
+  // }
+
+  // if (!validPassword) {
+  //   return next(new ErrorState('Некорректный пароль! Пароль не может быть меньше 4 знаков! Также пароль должен содержать буквы верхнего и нижнего регистра, цифры и символы', ERROR_CODE_BAD_REQUEST));
+  // }
+
+  const hashPassword = bcrypt.hashSync(password, 10);
+
+  return User.create({
+    name, about, avatar, email, password: hashPassword,
+  })
+    .then((user) => {
+      res.send({
+        data: {
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email: user.email,
+        },
+      });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return next(new ErrorState('Переданы некорректные данные при создании пользователя', ERROR_CODE_BAD_REQUEST));
+      }
+      if (err.name === 'MongoError' && err.code === 11000) {
+        return next(new ErrorState('Пользователь уже существует', ERROR_CODE_CONFLICT));
+      }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
+};
 
-    res.send({
-      name: user.name, about: user.about, avatar: user.avatar, email: user.email,
-    });
-  } catch (error) {
-    next(error);
-  }
-}
+// const createUser = (req, res, next) => {
+//   try {
+//     const {
+//       name, about, avatar, email, password,
+//     } = req.body;
+
+//     const hash = bcrypt.hash(password, 10);
+
+//     const user = User.create({
+//       name, about, avatar, email, password: hash,
+//     });
+
+//     res.send({
+//       name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 const updateUser = (req, res, next) => {
   const { name, about } = req.body;
@@ -161,79 +170,79 @@ const updateUserAvatar = (req, res, next) => {
     });
 };
 
-// const login = (req, res, next) => {
-//   const { email, password } = req.body;
-//   User.findOne({ email }).select('+password')
-//     .orFail(() => {
-//       throw new ErrorState('Пользователь не существует', ERROR_CODE_UNAUTHORIZED);
-//     })
-//     .then((user) => {
-//       bcrypt.compare(password, user.password)
-//         .then((matched) => {
-//           if (!matched) {
-//             const error = new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
-//             throw error;
-//           }
-//           const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : randomString, { expiresIn: '7d' });
-//           res.status(200).cookie('jwt', token, {
-//             maxAge: 3600000 * 24 * 7,
-//             httpOnly: true,
-//             domain: '.nomoredomains.monster',
-//             secure: true,
-//             path: '/',
-//             sameSite: 'None',
-//           })
-//             .send({ message: 'Вы успешно авторизовались!' })
-//         })
-//         .catch((err) => {
-//           if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
-//             next(err);
-//           } else {
-//             next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-//           }
-//         });
-//     })
-//     .catch((err) => {
-//       if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
-//         return next(err);
-//       }
-//       return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-//     });
-// };
-
 const login = (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const user = User.findOne({ email }).select('+password');
+  const { email, password } = req.body;
+  User.findOne({ email }).select('+password')
+    .orFail(() => {
+      throw new ErrorState('Пользователь не существует', ERROR_CODE_UNAUTHORIZED);
+    })
+    .then((user) => {
+      bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
+          }
+          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : randomString, { expiresIn: '7d' });
+          res
+          //   .status(200).cookie('jwt', token, {
+          //     maxAge: 3600000 * 24 * 7,
+          //     httpOnly: true,
+          //     domain: '.nomoredomains.monster',
+          //     secure: true,
+          //     path: '/',
+          //     sameSite: 'None',
+          // })
+            .send({ token });
+        })
+        .catch((err) => {
+          if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
+            next(err);
+          } else {
+            next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+          }
+        });
+    })
+    .catch((err) => {
+      if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
+        return next(err);
+      }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+    });
+};
 
-    if (!user) {
-      throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
-    }
+// const login = (req, res, next) => {
+//   try {
+//     const { email, password } = req.body;
+//     const user = User.findOne({ email }).select('+password');
 
-    const isMatched = bcrypt.compare(password, user.password);
+//     if (!user) {
+//       throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
+//     }
 
-    if (!isMatched) {
-      throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
-    } else {
-      const token = jwt.sign(
-        { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : randomString,
-        { expiresIn: '7d' },
-      );
-      res.status(200).cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-        domain: '.nomoredomains.monster',
-        secure: true,
-        path: '/',
-        sameSite: 'None',
-      })
-        .send({ message: 'Вы успешно авторизовались!' });
-    }
-  } catch (error) {
-    next(error);
-  }
-}
+//     const isMatched = bcrypt.compare(password, user.password);
+
+//     if (!isMatched) {
+//       throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
+//     } else {
+//       const token = jwt.sign(
+//         { _id: user._id },
+//         NODE_ENV === 'production' ? JWT_SECRET : randomString,
+//         { expiresIn: '7d' },
+//       );
+//       res.status(200).cookie('jwt', token, {
+//         maxAge: 3600000 * 24 * 7,
+//         httpOnly: true,
+//         domain: '.nomoredomains.monster',
+//         secure: true,
+//         path: '/',
+//         sameSite: 'None',
+//       })
+//         .send({ message: 'Вы успешно авторизовались!' });
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 const logout = (req, res, next) => {
   const { email } = req.body;
@@ -270,36 +279,37 @@ const logout = (req, res, next) => {
     .send({ message: 'Вы вышли из системы!' })
 }
 
+const getCurrentUser = (req, res, next) => {
+  User.findById(req.user)
+    .orFail(() => {
+      next(new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND));
+    })
+    .then((user) => {
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      if (err.statusCode === ERROR_CODE_NOT_FOUND) {
+        return next(err);
+      }
+      if (err.name === 'CastError') {
+        return next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
+      }
+      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+    });
+};
+
 // const getCurrentUser = (req, res, next) => {
 //   const { user } = req;
-//   User.findById(user._id)
-//     .orFail(() => {
-//       next(new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND));
-//     })
-//     .then((user) => res.send(user))
-//     .catch((err) => {
-//       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-//         return next(err);
-//       }
-//       if (err.name === 'CastError') {
-//         return next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
-//       }
-//       return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-//     });
-// };
-
-const getCurrentUser = (req, res, next) => {
-  const { user } = req;
-  try {
-    const foundUser = User.findById(user._id);
-    if (!foundUser) {
-      throw new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND);
-    }
-    res.send(foundUser);
-  } catch (error) {
-    next(error);
-  }
-}
+//   try {
+//     const foundUser = User.findById(user._id);
+//     if (!foundUser) {
+//       throw new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND);
+//     }
+//     res.send(foundUser);
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 module.exports = {
   getAllUsers, getUser, createUser, updateUser, updateUserAvatar, login, logout, getCurrentUser,
