@@ -3,7 +3,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const { Joi, celebrate, errors } = require('celebrate');
@@ -27,33 +26,33 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
-// const allowedCors = [
-//   'https://kshmr-mesto.nomoredomains.monster',
-//   'http://kshmr-mesto.nomoredomains.monster',
-//   'http://localhost:3000',
-// ];
+const allowedCors = [
+  'https://kshmr-mesto.nomoredomains.monster',
+  'http://kshmr-mesto.nomoredomains.monster',
+  'http://localhost:3000',
+];
 
-// app.use((req, res, next) => {
-//   const { origin } = req.headers;
-//   if (allowedCors.includes(origin)) {
-//     res.header('Access-Control-Allow-Origin', origin);
-//     res.header('Access-Control-Allow-Credentials', true);
-//   }
+app.use((req, res, next) => {
+  const { origin } = req.headers;
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', true);
+  }
 
-//   const { method } = req;
+  const { method } = req;
 
-//   const ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+  const ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 
-//   const requestHeaders = req.headers['access-control-request-headers'];
+  const requestHeaders = req.headers['access-control-request-headers'];
 
-//   if (method === 'OPTIONS') {
-//     res.header('Access-Control-Allow-Methods', ALLOWED_METHODS);
-//     res.header('Access-Control-Allow-Headers', requestHeaders);
-//     return res.end();
-//   }
+  if (method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', ALLOWED_METHODS);
+    res.header('Access-Control-Allow-Headers', requestHeaders);
+    return res.end();
+  }
 
-//   next();
-// });
+  next();
+});
 
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
