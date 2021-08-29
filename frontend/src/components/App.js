@@ -59,7 +59,7 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }, [isLoggedIn]);
+  }, []);
 
   function handleEditProfileClick() {
     setIsLoading(false);
