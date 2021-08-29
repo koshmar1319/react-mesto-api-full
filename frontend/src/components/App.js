@@ -48,7 +48,6 @@ function App() {
     setIsLoading(false);
     handleCheckToken();
     setIsSuccessInfoToolTip(false);
-    setIsLoggedIn(false);
   }, []);
 
   React.useEffect(() => {
@@ -301,7 +300,7 @@ function App() {
         />
         <Switch>
           <ProtectedRoute
-            exact
+            //exact
             path="/"
             component={Main}
             isLoggedIn={isLoggedIn}
@@ -322,9 +321,9 @@ function App() {
             <Login onLogin={handleLogin} isLoading={isLoading} />
           </Route>
 
-          <Route>
+          {/* <Route>
             <Redirect to={!isLoggedIn ? "/sign-in" : "/"} />
-          </Route>
+          </Route> */}
         </Switch>
 
         <Footer isLoggedIn={isLoggedIn} />
