@@ -6,7 +6,7 @@ const { CastError } = require('../errors/cast-err');
 const { ExistFieldError } = require('../errors/exist-field-err');
 const { ValidationError } = require('../errors/validation-err');
 
-const signOut = (req, res) => res.clearCookie('jwt').send({ message: 'Куки удалены' });
+const signOut = (req, res) => res.clearCookie('jwt').send({ message: 'Куки очищены' });
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
