@@ -24,7 +24,7 @@ const randomString = 'secret';
 
 const auth = (req, res, next) => {
   const { jwt } = req.cookies;
-  const { JWT_SECRET, NODE_ENV } = process.env;
+  const { JWT_SECRET = 'secret-key', NODE_ENV } = process.env;
 
   try {
     if (!jwt) {
