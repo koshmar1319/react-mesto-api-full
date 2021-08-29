@@ -37,11 +37,11 @@ function App() {
 
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const [userEmail, setUserEmail] = React.useState("");
-  // const [userEmail, setUserEmail] = React.useState(null);
+  // const [userEmail, setUserEmail] = React.useState("");
+  const [userEmail, setUserEmail] = React.useState(null);
   const [userPassword, setUserPassword] = React.useState("");
 
-  const [isLoggedIn, setIsLoggedIn] = React.useState(null);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const history = useHistory();
 
   React.useEffect(() => {
@@ -285,8 +285,8 @@ function App() {
     auth
       .signOut()
       .catch(err => console.log(err))
-    setUserEmail("");
-    setIsLoggedIn(null);
+    setUserEmail(null);
+    setIsLoggedIn(false);
   }
 
   return (
