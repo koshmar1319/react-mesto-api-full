@@ -1,19 +1,13 @@
 .profile {
-  margin-top: 40px;
+  padding: 36px 200px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-@media (max-width: 900px) {
+@media screen and (max-width: 1000px) {
   .profile {
-    padding: 0 19px;
-  }
-}
-
-@media (max-width: 740px) {
-  .profile {
-    margin-top: 42px;
     flex-direction: column;
+    padding: 36px 19px 0;
   }
 }

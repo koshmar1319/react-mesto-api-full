@@ -1,13 +1,12 @@
 {
   "name": "express-mesto",
   "version": "1.0.0",
-  "description": "`/routes` — папка с файлами роутера  \r `/controllers` — папка с файлами контроллеров пользователя и карточки   \r `/models` — папка с файлами описания схем пользователя и карточки",
-  "main": "app.js",
+  "description": "Сервер для проекта Место",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
+    "lint": "npx eslint .",
     "dev": "nodemon app.js",
-    "lint": "npx eslint ."
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +19,12 @@
     "url": "https://github.com/koshmar1319/react-mesto-api-full/issues"
   },
   "homepage": "https://github.com/koshmar1319/react-mesto-api-full#readme",
+  "devDependencies": {
+    "eslint": "^7.31.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.4",
+    "nodemon": "^2.0.12"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "celebrate": "^15.0.0",
@@ -33,11 +38,5 @@
     "mongoose": "^5.13.3",
     "validator": "^13.6.0",
     "winston": "^3.3.3"
-  },
-  "devDependencies": {
-    "eslint": "^7.31.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.23.4",
-    "nodemon": "^2.0.12"
   }
 }

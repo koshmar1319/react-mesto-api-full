@@ -1,18 +1,16 @@
 .footer {
-  margin-top: 66px;
-  margin-bottom: 60px;
+  padding: 0 200px 60px;
+
 }
 
-@media (max-width: 900px) {
+@media screen and (max-width: 1000px) {
   .footer {
-    padding: 0 19px;
+     padding: 0 50px 60px; 
   }
 }
 
-@media (max-width: 480px) {
+@media screen and (max-width: 500px) {
   .footer {
-    margin-top: 48px;
-    margin-bottom: 36px;
-    padding: 0;
+     padding: 0 19px 36px; 
   }
 }

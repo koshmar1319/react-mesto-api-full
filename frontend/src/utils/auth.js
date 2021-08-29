@@ -1,39 +1,44 @@
-
-
-import { authSettings } from "./utils";
-
 class Auth {
-  constructor({ baseUrl }) {
-    this._baseUrl = baseUrl;
+  constructor(baseUrl) {
+    this.baseUrl = baseUrl;
   }
 
   _checkResponse(res) {
     if (res.ok) {
       return res.json();
-    } else {
-      return Promise.reject(`Ошибка ${res.status}`);
     }
+    return Promise.reject(`Ошибка ${res.status}`);
   }
 
-  register({ email, password }) {
-    return fetch(`${this._baseUrl}/signup`, {
-      method: "POST",
-      credentials: "include",
+  registration({ email, password }) {
+    return fetch(`${this.baseUrl}/signup`, {
+      method: 'POST',
+      credentials: 'include',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ password, email }),
     }).then(this._checkResponse);
   }
 
-  login({ email, password }) {
-    return fetch(`${this._baseUrl}/signin`, {
-      method: "POST",
-      credentials: "include",
+  authorization({ email, password }) {
+    return fetch(`${this.baseUrl}/signin`, {
+      method: 'POST',
+      credentials: 'include',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ password, email }),
+    }).then(this._checkResponse);
+  }
+
+  checkToken() {
+    return fetch(`${this.baseUrl}/users/me`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }).then(this._checkResponse);
   }
 
@@ -42,30 +47,8 @@ class Auth {
       credentials: 'include',
     }).then(this._checkResponse);
   }
-
-  // logout(email) {
-  //   return fetch(`${this._baseUrl}/logout`, {
-  //     method: "DELETE",
-  //     credentials: "include",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       "email": email
-  //     }),
-  //   }).then(this._checkResponse);
-  // }
-
-  checkToken() {
-    return fetch(`${this._baseUrl}/users/me`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then(this._checkResponse);
-  }
 }
 
-const auth = new Auth(authSettings);
+const auth = new Auth('https://api.kshmr-mesto.nomoredomains.monster');
+
 export default auth;

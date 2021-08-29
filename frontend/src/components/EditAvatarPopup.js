@@ -1,52 +1,38 @@
-import React from "react";
-import PopupWithForm from "./PopupWithForm";
-import { useFormAndValidation } from "../utils/useFormAndValidation";
+import React from 'react';
+import PopupWithForm from './PopupWithForm';
 
-function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, isLoading }) {
-  const { values, handleChange, errors, isValid, resetForm } =
-    useFormAndValidation();
-
-  React.useEffect(() => {
-    resetForm({ link: "" });
-  }, [isOpen]);
+function EditAvatarPopup(props) {
+  const avatarLink = React.useRef(null);
 
   function handleSubmit(e) {
     e.preventDefault();
-    onUpdateAvatar({ avatar: values.link });
+
+    props.onUpdateAvatar({
+      avatar: avatarLink.current.value,
+    });
   }
 
   return (
     <PopupWithForm
-      containerName="popup-upd__container"
-      titleName="popup-upd__title"
-      btnName="popup-upd__btn"
-      title="Обновить аватар"
-      name="update"
-      buttonText={isLoading ? "Сохранение . . ." : "Сохранить"}
-      isOpen={isOpen}
-      onClose={onClose}
+      {...props}
+      type={'avatar'}
+      title={'Обновить аватар'}
+      submitBtnCaption={'Сохранить'}
       onSubmit={handleSubmit}
-      buttonState={isValid}
     >
-      <div className="popup__area">
+      <section className="popup__section">
         <input
-          className="popup-upd__input popup__input"
+          ref={avatarLink}
+          id="avatar-link"
           type="url"
-          name="link"
+          name="avatar"
+          className="popup__input"
           placeholder="Ссылка на аватар"
-          value={values.link || ""}
-          onChange={handleChange}
           required
+          aria-label="Ссылка на аватар"
         />
-        <span
-          className={`popup__input-error popup-upd__input-error ${
-            errors.link ? "popup__input-error_active" : ""
-          }`}
-          id="popup-upd-error"
-        >
-          {errors.link}
-        </span>
-      </div>
+        <span className="popup__input-error avatar-link-error"></span>
+      </section>
     </PopupWithForm>
   );
 }

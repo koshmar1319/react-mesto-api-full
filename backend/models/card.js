@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
+const { linkRegExp } = require('../utils/utils');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -11,12 +11,9 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
-    match: /^((https?):\/\/)(www.)?.([\da-z.-]{2,})([/\w.-]*)*\/?$/gmi,
     validate: {
-      validator(link) {
-        return validator.isURL(link, { require_protocol: true });
-      },
-      message: 'Введите корректный адрес ссылки',
+      validator: (v) => linkRegExp.test(v),
+      message: 'Ошибка валидации ссылки на картинку',
     },
   },
   owner: {
@@ -24,11 +21,13 @@ const cardSchema = new mongoose.Schema({
     ref: 'user',
     required: true,
   },
-  likes: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
+  likes: {
+    type: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+    }],
     default: [],
-  }],
+  },
   createdAt: {
     type: Date,
     default: Date.now,
