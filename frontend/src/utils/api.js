@@ -70,8 +70,8 @@ class Api {
     }).then(this._checkResponse);
   }
 
-  changeLikeCardStatus(card, likeCardStatus) {
-    return fetch(`${this._baseUrl}/cards/${card._id}/likes`, {
+  changeLikeCardStatus(cardId, likeCardStatus) {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: (likeCardStatus ? 'PUT' : 'DELETE'),
       credentials: 'include',
       headers: {
