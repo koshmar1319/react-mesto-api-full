@@ -211,29 +211,23 @@ function App() {
       });
   }
 
-  function getData() {
-    Promise.all([api.getUserInfo(), api.getCards()])
-      .then(([userData, cardsData]) => {
-        setCurrentUser(userData);
-        setCards(cardsData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+  // function getData() {
+  //   Promise.all([api.getUserInfo(), api.getCards()])
+  //     .then(([userData, cardsData]) => {
+  //       setCurrentUser(userData);
+  //       setCards(cardsData);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
 
   function handleLogin(data) {
     auth
       .login(data)
-      .then(({ data }) => {
+      .then(() => {
         // localStorage.setItem("jwt", res.token);
-        if (data) {
-          // handleCheckToken();
-          setIsLoggedIn(true);
-          setUserEmail(data.email);
-          getData();
-          history.push('/');
-        }
+        handleCheckToken();
       })
       .catch(() => {
         setIsSuccessInfoToolTip(false);
