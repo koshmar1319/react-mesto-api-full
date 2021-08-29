@@ -35,16 +35,16 @@ class Auth {
     }).then(this._checkResponse);
   }
 
-  signOut(email) {
+  signOut(/* email */) {
     return fetch(`${this.baseUrl}/users/signout`, {
-      method: "GET",
+      // method: "GET",
       credentials: 'include',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        "email": email
-      }),
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
+      // body: JSON.stringify({
+      //   "email": email
+      // }),
     }).then(this._checkResponse);
   }
 

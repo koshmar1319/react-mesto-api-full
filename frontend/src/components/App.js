@@ -45,6 +45,7 @@ function App() {
   const history = useHistory();
 
   React.useEffect(() => {
+    setIsLoading(false);
     handleCheckToken();
     setIsSuccessInfoToolTip(false);
   }, []);
@@ -242,30 +243,38 @@ function App() {
           setInfoToolTipPopupOpen(true);
         }
       })
-      // .finally(() => {
-      //   setIsLoading(false);
-      // })
+    // .finally(() => {
+    //   setIsLoading(false);
+    // })
     // } else {
     //   setIsLoading(false);
     //   return;
     // }
   }
 
+  // function handleSignOut() {
+  //   auth
+  //     .signOut(userEmail)
+  //     .then(() => {
+  //       setIsLoggedIn(null);
+  //       history.push("/sign-in");
+  //       setUserEmail("");
+  //       setUserPassword("");
+  //       setIsSuccessInfoToolTip(null);
+  //       setIsLoading(false);
+  //     })
+  //     .catch(() => {
+  //       setIsSuccessInfoToolTip(false);
+  //       setInfoToolTipPopupOpen(true);
+  //     })
+  // }
+
   function handleSignOut() {
     auth
-      .signOut(userEmail)
-      .then(() => {
-        setIsLoggedIn(null);
-        history.push("/sign-in");
-        setUserEmail("");
-        setUserPassword("");
-        setIsSuccessInfoToolTip(null);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setIsSuccessInfoToolTip(false);
-        setInfoToolTipPopupOpen(true);
-      })
+      .signOut()
+        .catch(err => console.log(err))
+      setUserEmail("");
+      setIsLoggedIn(false);
   }
 
   return (
