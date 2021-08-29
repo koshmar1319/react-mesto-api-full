@@ -44,11 +44,12 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const history = useHistory();
 
-  // React.useEffect(() => {
-  //   setIsLoading(false);
-  //   handleCheckToken();
-  //   setIsSuccessInfoToolTip(false);
-  // }, []);
+  React.useEffect(() => {
+    setIsLoading(false);
+    handleCheckToken();
+    setIsSuccessInfoToolTip(false);
+    setIsLoggedIn(false);
+  }, []);
 
   React.useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -211,16 +212,16 @@ function App() {
       });
   }
 
-  function getData() {
-    Promise.all([api.getUserInfo(), api.getCards()])
-      .then(([userData, cardsData]) => {
-        setCurrentUser(userData);
-        setCards(cardsData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+  // function getData() {
+  //   Promise.all([api.getUserInfo(), api.getCards()])
+  //     .then(([userData, cardsData]) => {
+  //       setCurrentUser(userData);
+  //       setCards(cardsData);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
 
   function handleLogin(data) {
     auth
@@ -244,7 +245,7 @@ function App() {
       .then((res) => {
         setUserEmail(res.email);
         setIsLoggedIn(true);
-        getData();
+        // getData();
         setIsLoading(false);
         history.push("/");
       })
