@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { Joi, celebrate } = require('celebrate');
 const {
-  getAllUsers, getUser, updateUser, updateUserAvatar, getCurrentUser,
+  getAllUsers, getUser, updateUser, updateUserAvatar, getCurrentUser, signOut,
 } = require('../controllers/users');
 
 router.get('/users', getAllUsers);
@@ -26,5 +26,7 @@ router.patch('/users/me/avatar', celebrate({
     avatar: Joi.string().required(),
   }),
 }), updateUserAvatar);
+
+router.get('/signout', signOut);
 
 module.exports = router;

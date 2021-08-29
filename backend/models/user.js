@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { ErrorState } = require('../middlewares/errors');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -41,14 +42,30 @@ const userSchema = new mongoose.Schema({
     required: true,
     select: false,
   },
-}, { versionKey: false });
+});
 
-// function deleteVisiblePassword() {
-//   const obj = this.toObject();
-//   delete obj.password;
-//   return obj;
-// }
+userSchema.statics.findUserByCredentials = function (email, password) {
+  return this.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        throw new ErrorState('Некорректные данные авторизации!', ERROR_CODE_UNAUTHORIZED);
+      }
 
-// userSchema.methods.toJSON = deleteVisiblePassword;
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            throw new ErrorState('Некорректные данные авторизации!', ERROR_CODE_UNAUTHORIZED);
+          }
+
+          return user;
+        });
+    });
+};
+
+userSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+}
 
 module.exports = mongoose.model('user', userSchema);

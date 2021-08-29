@@ -1,9 +1,9 @@
 
 
-import { baseUrl } from "./utils";
+import { authSettings } from "./utils";
 
 class Auth {
-  constructor( baseUrl ) {
+  constructor({ baseUrl }) {
     this._baseUrl = baseUrl;
   }
 
@@ -11,7 +11,7 @@ class Auth {
     if (res.ok) {
       return res.json();
     } else {
-      return Promise.reject(res.json());
+      return Promise.reject(`Ошибка ${res.status}`);
     }
   }
 
@@ -43,18 +43,24 @@ class Auth {
     }).then(this._checkResponse);
   }
 
-  logout(email) {
-    return fetch(`${this._baseUrl}/logout`, {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        "email": email
-      }),
+  signOut() {
+    return fetch(`${this.baseUrl}/users/signout`, {
+      credentials: 'include',
     }).then(this._checkResponse);
   }
+
+  // logout(email) {
+  //   return fetch(`${this._baseUrl}/logout`, {
+  //     method: "DELETE",
+  //     credentials: "include",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       "email": email
+  //     }),
+  //   }).then(this._checkResponse);
+  // }
 
   checkToken() {
     return fetch(`${this._baseUrl}/users/me`, {
@@ -67,5 +73,5 @@ class Auth {
   }
 }
 
-const auth = new Auth(baseUrl);
+const auth = new Auth(authSettings);
 export default auth;

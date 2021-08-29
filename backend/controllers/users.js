@@ -1,7 +1,6 @@
-const { JWT_SECRET, NODE_ENV } = process.env;
+const { NODE_ENV, JWT_SECRET = 'secret-key' } = process.env;
 const bcrypt = require('bcryptjs');
-const jsonwebtoken = require('jsonwebtoken');
-const validator = require('validator');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   ERROR_CODE_BAD_REQUEST,
@@ -14,323 +13,128 @@ const { ErrorState } = require('../middlewares/errors');
 
 const randomString = 'secret';
 
-const getAllUsers = async (req, res, next) => {
-  try {
-    const users = await User.find({});
-    res.send(users);
-  } catch (error) {
-    next(error);
-  }
-};
+const signOut = (req, res) => res.clearCookie('jwt').send({ message: 'Куки очищены' });
 
-const getUser = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.userId);
-    if (!user) throw new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND);
-    res.send(user);
-  } catch (error) {
-    next(error);
-  }
-};
+const login = (req, res, next) => {
+  const { email, password } = req.body;
 
-// const getAllUsers = (req, res, next) => {
-//   User.find({})
-//     .then((users) => res.send(users))
-//     .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
-// };
-
-// const getUser = (req, res, next) => {
-//   User.findById(req.params.userId)
-//     .orFail(() => {
-//       throw new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND);
-//     })
-//     .then((user) => res.send({ data: user }))
-//     .catch((err) => {
-//       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-//         return next(err);
-//       }
-//       if (err.name === 'CastError') {
-//         return next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
-//       }
-//       return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-//     });
-// };
-
-// const createUser = (req, res, next) => {
-//   const {
-//     name, about, avatar, email, password,
-//   } = req.body;
-
-//   const validEmail = validator.isEmail(email, {
-//     allow_display_name: false,
-//     require_display_name: false,
-//     allow_utf8_local_part: true,
-//     require_tld: true,
-//     allow_ip_domain: false,
-//     domain_specific_validation: false,
-//     blacklisted_chars: '',
-//   });
-
-//   const validPassword = validator.isStrongPassword(password, {
-//     minLength: 4,
-//     minLowercase: 1,
-//     minUppercase: 1,
-//     minNumbers: 1,
-//     minSymbols: 1,
-//     returnScore: false,
-//   });
-
-//   if (!validEmail) {
-//     return next(new ErrorState('Некорректная электронная почта', ERROR_CODE_BAD_REQUEST));
-//   }
-
-//   if (!validPassword) {
-//     return next(new ErrorState('Некорректный пароль! Пароль не может быть меньше 4 знаков! Также пароль должен содержать буквы верхнего и нижнего регистра, цифры и символы', ERROR_CODE_BAD_REQUEST));
-//   }
-
-//   const hashPassword = bcrypt.hashSync(password, 10);
-
-//   return User.create({
-//     name, about, avatar, email, password: hashPassword,
-//   })
-//     .then((user) => {
-//       res.send({
-//         data: {
-//           name: user.name,
-//           about: user.about,
-//           avatar: user.avatar,
-//           email: user.email,
-//         },
-//       });
-//     })
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         return next(new ErrorState('Переданы некорректные данные при создании пользователя', ERROR_CODE_BAD_REQUEST));
-//       }
-//       if (err.name === 'MongoError' && err.code === 11000) {
-//         return next(new ErrorState('Пользователь уже существует', ERROR_CODE_CONFLICT));
-//       }
-//       return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-//     });
-// };
-
-const createUser = async (req, res, next) => {
-  try {
-    const {
-      name, about, avatar, email, password,
-    } = req.body;
-
-    const hash = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
-      name, about, avatar, email, password: hash,
-    });
-
-    res.send({
-      name: user.name, about: user.about, avatar: user.avatar, email: user.email,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-const updateUser = (req, res, next) => {
-  const { name, about } = req.body;
-  const userId = req.user._id;
-  User.findByIdAndUpdate(userId, { name, about }, {
-    new: true,
-    runValidators: true,
-    upsert: false,
-  })
-    .orFail(() => {
-      next(new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND));
-    })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        return next(err);
-      }
-      if (err.name === 'ValidationError') {
-        return next(new ErrorState('Переданы некорректные данные при обновлении профиля', ERROR_CODE_BAD_REQUEST));
-      }
-      if (err.name === 'CastError') {
-        return next(new ErrorState('Переданы некорректные данные при обновлении профиля', ERROR_CODE_BAD_REQUEST));
-      }
-      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-    });
-};
-
-const updateUserAvatar = (req, res, next) => {
-  const { avatar } = req.body;
-  const userId = req.user._id;
-  if (!avatar.trim()) {
-    next(new ErrorState('Переданы некорректные данные при обновлении аватара', ERROR_CODE_BAD_REQUEST));
-  }
-  User.findByIdAndUpdate(userId, { avatar }, {
-    new: true,
-    runValidators: true,
-    upsert: false,
-  })
-    .orFail(() => {
-      next(new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND));
-    })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        return next(err);
-      }
-      if (err.name === 'ValidationError') {
-        return next(new ErrorState('Переданы некорректные данные при обновлении аватара', ERROR_CODE_BAD_REQUEST));
-      }
-      if (err.name === 'CastError') {
-        return next(new ErrorState('Переданы некорректные данные при обновлении аватара', ERROR_CODE_BAD_REQUEST));
-      }
-      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-    });
-};
-
-// const login = (req, res, next) => {
-//   const { email, password } = req.body;
-//   User.findOne({ email }).select('+password')
-//     .orFail(() => {
-//       throw new ErrorState('Пользователь не существует', ERROR_CODE_UNAUTHORIZED);
-//     })
-//     .then((user) => {
-//       bcrypt.compare(password, user.password)
-//         .then((matched) => {
-//           if (!matched) {
-//             throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
-//           }
-//           const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : randomString, { expiresIn: '7d' });
-//           res
-//             .status(200).cookie('jwt', token, {
-//               maxAge: 3600000 * 24 * 7,
-//               httpOnly: true,
-//               domain: '.nomoredomains.monster',
-//               secure: true,
-//               path: '/',
-//               sameSite: 'None',
-//           })
-//             .send({ token });
-//         })
-//         .catch((err) => {
-//           if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
-//             next(err);
-//           } else {
-//             next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-//           }
-//         });
-//     })
-//     .catch((err) => {
-//       if (err.statusCode === ERROR_CODE_UNAUTHORIZED) {
-//         return next(err);
-//       }
-//       return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-//     });
-// };
-
-const login = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email }).select('+password');
-
-    if (!user) {
-      throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
-    }
-
-    const isMatched = await bcrypt.compare(password, user.password);
-
-    if (!isMatched) {
-      throw new ErrorState('Неправильный логин или пароль', ERROR_CODE_UNAUTHORIZED);
-    } else {
-      const token = jsonwebtoken.sign(
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : randomString,
         { expiresIn: '7d' },
       );
-      res.status(200).cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-        domain: '.nomoredomains.monster',
-        secure: true,
-        path: '/',
-      })
-        .send({ message: 'Вы успешно авторизовались!' });
-    }
-  } catch (error) {
-    next(error);
-  }
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true,
+        })
+        .status(200)
+        .send({ data: user.toJSON() });
+    })
+    .catch(next);
 };
 
-const logout = async (req, res, next) => {
-  try {
-    const { email } = req.body;
-    const { jwt } = req.cookies;
+const createUser = (req, res, next) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-    let verifiedUser = null;
-
-    if (!jwt) {
-      throw new ErrorState('Некорректные данные авторизации!', ERROR_CODE_UNAUTHORIZED);
-    }
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      throw new ErrorState('Пользователь не существует', ERROR_CODE_UNAUTHORIZED);
-    }
-
-    jsonwebtoken.verify(jwt, NODE_ENV === 'production' ? JWT_SECRET : randomString, (err, payload) => {
-      if (err) {
-        throw new ErrorState('Некорректные данные авторизации!', ERROR_CODE_UNAUTHORIZED);
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+    .then((user) => res.send({ data: user.toJSON() }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new ErrorState('Переданы некорректные данные при создании пользователя', ERROR_CODE_BAD_REQUEST));
       }
-      verifiedUser = payload;
-
-      if (user._id.toHexString() !== verifiedUser._id) {
-        throw new ErrorState('Некорректные данные авторизации!', ERROR_CODE_UNAUTHORIZED);
+      if (err.name === 'MongoError' && err.code === 11000) {
+        next(new ErrorState('Пользователь уже существует', ERROR_CODE_CONFLICT));
+      } else {
+        next(err);
       }
     });
-    res.status(200).clearCookie('jwt', {
-      httpOnly: true,
-      domain: '.nomoredomains.monster',
-      secure: true,
-      path: '/',
-    })
-      .send({ message: 'Вы вышли из системы!' })
-  } catch (error) {
-    next(error);
-  }
 };
 
-// const getCurrentUser = (req, res, next) => {
-//   User.findById(req.user)
-//     .orFail(() => {
-//       next(new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND));
-//     })
-//     .then((user) => {
-//       res.send({ data: user });
-//     })
-//     .catch((err) => {
-//       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-//         return next(err);
-//       }
-//       if (err.name === 'CastError') {
-//         return next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
-//       }
-//       return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-//     });
-// };
+const getAllUsers = (req, res, next) => {
+  User.find({})
+    .then((data) => res.send(data))
+    .catch(next);
+};
 
-const getCurrentUser = async (req, res, next) => {
-  const { user } = req;
-  try {
-    const foundUser = await User.findById(user._id);
-    if (!foundUser) throw new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND);
-    res.send(foundUser);
-  } catch (error) {
-    next(error);
-  }
-}
+const getCurrentUser = (req, res, next) => {
+  const userId = req.user._id;
+  User.findById(userId)
+    .orFail(() => next(new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND)))
+    .then((data) => res.send(data))
+    .catch((err) => {
+      if (err.name === 'CastError') next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
+    });
+};
+
+const getUser = (req, res, next) => {
+  const { userId } = req.params;
+  User.findById(userId)
+    .orFail(() => next(new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND)))
+    .then((data) => res.send({ data }))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
+      } else {
+        next(err);
+      }
+    });
+};
+
+const updateUser = (req, res, next) => {
+  const userId = req.user._id;
+  const { name, about } = req.body;
+
+  User.findByIdAndUpdate(
+    userId,
+    { name, about },
+    {
+      new: true,
+      runValidators: true,
+    },
+  )
+    .orFail(() => next(new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND)))
+    .then((data) => res.send(data))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
+      } else {
+        next(err);
+      }
+    });
+};
+
+const updateUserAvatar = (req, res, next) => {
+  const userId = req.user._id;
+  const { avatar } = req.body;
+
+  User.findByIdAndUpdate(
+    userId,
+    { avatar },
+    {
+      new: true,
+      runValidators: true,
+    },
+  )
+    .orFail(() => next(new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND)))
+    .then((data) => res.send(data))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
+      } else {
+        next(err);
+      }
+    });
+};
+
 
 module.exports = {
-  getAllUsers, getUser, createUser, updateUser, updateUserAvatar, login, logout, getCurrentUser,
+  getAllUsers, getUser, createUser, updateUser, updateUserAvatar, login, getCurrentUser, signOut,
 };

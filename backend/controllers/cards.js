@@ -7,56 +7,49 @@ const {
 } = require('../utils/constants');
 const { ErrorState } = require('../middlewares/errors');
 
-// const getAllCards = (req, res, next) => {
-//   Card.find({})
-//     .then((cards) => res.status(200).send({ data: cards }))
-//     .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
-// };
-
-const getAllCards = async (req, res, next) => {
-  try {
-    const cards = await Card.find({}).populate(['likes', 'owner']).sort('-createdAt');
-    res.send(cards);
-  } catch (error) {
-    next(error);
-  }
-};
-
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
-  // const owner = req.user._id;
 
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send(card))
+    .then((data) => res.send(data))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new ErrorState('Переданы некорректные данные при создании карточки', ERROR_CODE_BAD_REQUEST));
+        next(new ErrorState('Переданы некорректные данные при создании карточки', ERROR_CODE_BAD_REQUEST));
+      } else {
+        next(err);
       }
-      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 
+const getAllCards = (req, res, next) => {
+  Card.find({})
+    .then((data) => res.send(data))
+    .catch(next);
+};
+
 const deleteCard = (req, res, next) => {
-  Card.findById(req.params.cardId)
-    .orFail(() => {
-      throw new ErrorState('Карточка с указанным идентификатором не найдена', ERROR_CODE_NOT_FOUND);
-    })
+  const currentUser = req.user._id;
+  const { cardId } = req.params;
+  Card.findById(cardId)
+    .orFail(() => next(new ErrorState('Карточка с указанным идентификатором не найдена', ERROR_CODE_NOT_FOUND)))
     .then((card) => {
-      if (req.user._id !== card.owner.toString()) {
+      if (!card.owner.equals(currentUser)) {
         next(new ErrorState('У вас нет доступа для осуществления данных действий', ERROR_CODE_FORBIDDEN));
       } else {
-        card.remove();
-        res.status(200).send({ message: 'Карточка удалена' });
+        Card.findByIdAndRemove(cardId)
+          .then((data) => res.send({
+            data,
+            message: 'Карточка удалена',
+          }))
+          .catch(next);
       }
     })
     .catch((err) => {
-      if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        return next(err);
-      }
       if (err.name === 'CastError') {
-        return next(new ErrorState('Переданы некорректные данные при удалении карточки', ERROR_CODE_BAD_REQUEST));
+        next(new ErrorState('Переданы некорректные данные при удалении карточки', ERROR_CODE_BAD_REQUEST));
+      } else {
+        next(err);
       }
-      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 
@@ -66,18 +59,14 @@ const likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => {
-      throw new ErrorState('Карточка с указанным идентификатором не найдена', ERROR_CODE_NOT_FOUND);
-    })
-    .then((card) => res.status(200).send({ data: card }))
+    .orFail(() => next(new ErrorState('Карточка с указанным идентификатором не найдена', ERROR_CODE_NOT_FOUND)))
+    .then((data) => res.send(data))
     .catch((err) => {
-      if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        return next(err);
-      }
       if (err.name === 'CastError') {
-        return next('Переданы некорректные данные для постановки лайка', ERROR_CODE_BAD_REQUEST);
+        next(new ErrorState('Переданы некорректные данные для постановки лайка', ERROR_CODE_BAD_REQUEST));
+      } else {
+        next(err);
       }
-      return next('Что-то пошло не так', ERROR_CODE_DEFAULT);
     });
 };
 
@@ -87,18 +76,14 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => {
-      throw new ErrorState('Карточка с указанным идентификатором не найдена', ERROR_CODE_NOT_FOUND);
-    })
-    .then((card) => res.status(200).send({ data: card }))
+    .orFail(() => next(new ErrorState('Карточка с указанным идентификатором не найдена', ERROR_CODE_NOT_FOUND)))
+    .then((data) => res.send(data))
     .catch((err) => {
-      if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        return next(err);
-      }
       if (err.name === 'CastError') {
-        return next(new ErrorState('Переданы некорректные данные для снятия лайка', ERROR_CODE_BAD_REQUEST));
+        next(new ErrorState('Переданы некорректные данные для снятия лайка', ERROR_CODE_BAD_REQUEST));
+      } else {
+        next(err);
       }
-      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
     });
 };
 

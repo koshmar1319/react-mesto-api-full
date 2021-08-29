@@ -12,13 +12,21 @@ const { createUser, login, logout } = require('./controllers/users');
 const { handleError, ErrorState } = require('./middlewares/errors');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const mycors = require('./middlewares/cors');
 
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 
 const app = express();
 
-const { PORT, NODE_ENV } = process.env;
+const { PORT = 3000, NODE_ENV } = process.env;
+
+app.use(express.json());
+app.use(cookieParser());
+app.use(helmet());
+app.use(requestLogger);
+
+app.use(mycors);
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -26,49 +34,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
-
-app.use(cors({
-  origin: [
-    'https://kshmr-mesto.nomoredomains.monster',
-    'http://kshmr-mesto.nomoredomains.monster',
-    'http://localhost:3000',
-  ],
-  credentials: true,
-}));
-
-// const allowedCors = [
-//   'https://kshmr-mesto.nomoredomains.monster',
-//   'http://kshmr-mesto.nomoredomains.monster',
-//   'http://localhost:3000',
-// ];
-
-// app.use((req, res, next) => {
-//   const { origin } = req.headers;
-//   if (allowedCors.includes(origin)) {
-//     res.header('Access-Control-Allow-Origin', origin);
-//     res.header('Access-Control-Allow-Credentials', true);
-//   }
-
-//   const { method } = req;
-
-//   const ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
-
-//   const requestHeaders = req.headers['access-control-request-headers'];
-
-//   if (method === 'OPTIONS') {
-//     res.header('Access-Control-Allow-Methods', ALLOWED_METHODS);
-//     res.header('Access-Control-Allow-Headers', requestHeaders);
-//     return res.end();
-//   }
-
-//   next();
-// });
-
-app.use(helmet());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser());
-app.use(requestLogger);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -93,8 +58,6 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.delete('/logout', logout);
-
 app.use(auth);
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
@@ -109,4 +72,6 @@ app.use(errors());
 
 app.use(handleError);
 
-app.listen(NODE_ENV === 'production' ? PORT : 3001);
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
+});
