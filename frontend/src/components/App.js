@@ -236,15 +236,12 @@ function App() {
   }
 
   function handleCheckToken() {
-    // const jwt = localStorage.getItem("jwt");
-    // if (jwt) {
     setIsLoading(true);
     auth
-      .checkToken() /* jwt */
+      .checkToken()
       .then((res) => {
         setUserEmail(res.email);
         setIsLoggedIn(true);
-        // getData();
         setIsLoading(false);
         history.push("/");
       })
@@ -255,13 +252,6 @@ function App() {
           setInfoToolTipPopupOpen(true);
         }
       })
-    // .finally(() => {
-    //   setIsLoading(false);
-    // })
-    // } else {
-    //   setIsLoading(false);
-    //   return;
-    // }
   }
 
   // function handleSignOut() {
