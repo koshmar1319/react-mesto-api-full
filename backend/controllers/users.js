@@ -14,28 +14,47 @@ const { ErrorState } = require('../middlewares/errors');
 
 const randomString = 'secret';
 
-const getAllUsers = (req, res, next) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({});
+    res.send(users);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getUser = (req, res, next) => {
-  User.findById(req.params.userId)
-    .orFail(() => {
-      throw new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND);
-    })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.statusCode === ERROR_CODE_NOT_FOUND) {
-        return next(err);
-      }
-      if (err.name === 'CastError') {
-        return next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
-      }
-      return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
-    });
+const getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) throw new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND);
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
 };
+
+// const getAllUsers = (req, res, next) => {
+//   User.find({})
+//     .then((users) => res.send(users))
+//     .catch(() => next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT)));
+// };
+
+// const getUser = (req, res, next) => {
+//   User.findById(req.params.userId)
+//     .orFail(() => {
+//       throw new ErrorState('Пользователь с заданным идентификатором отсутствует в базе данных', ERROR_CODE_NOT_FOUND);
+//     })
+//     .then((user) => res.send({ data: user }))
+//     .catch((err) => {
+//       if (err.statusCode === ERROR_CODE_NOT_FOUND) {
+//         return next(err);
+//       }
+//       if (err.name === 'CastError') {
+//         return next(new ErrorState('Переданы некорректные данные при получении пользователя', ERROR_CODE_BAD_REQUEST));
+//       }
+//       return next(new ErrorState('Что-то пошло не так', ERROR_CODE_DEFAULT));
+//     });
+// };
 
 // const createUser = (req, res, next) => {
 //   const {
