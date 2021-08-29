@@ -225,9 +225,15 @@ function App() {
   function handleLogin(data) {
     auth
       .login(data)
-      .then(() => {
+      .then(({ data }) => {
         // localStorage.setItem("jwt", res.token);
-        handleCheckToken();
+        if (data) {
+          // handleCheckToken();
+          setIsLoggedIn(true);
+          setUserEmail(data.email);
+          getData();
+          history.push('/');
+        }
       })
       .catch(() => {
         setIsSuccessInfoToolTip(false);
@@ -244,7 +250,7 @@ function App() {
       .then((res) => {
         setUserEmail(res.email);
         setIsLoggedIn(true);
-        getData();
+        // getData();
         setIsLoading(false);
         history.push("/");
       })
