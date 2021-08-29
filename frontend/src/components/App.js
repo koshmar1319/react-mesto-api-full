@@ -13,8 +13,8 @@ import AddPlacePopup from './AddPlacePopup';
 import ConfirmPopup from './ConfirmPopup';
 import ProtectedRoute from './ProtectedRoute';
 import Login from './Login';
-import Register from './Register';
 import InfoTooltip from './InfoTooltip';
+import Register from './Register';
 // import Token from '../utils/token';
 
 function App() {
