@@ -260,7 +260,7 @@ function App() {
         setUserEmail("");
         setUserPassword("");
         setIsSuccessInfoToolTip(null);
-        // setIsLoading(false);
+        setIsLoading(false);
       })
       .catch(() => {
         setIsSuccessInfoToolTip(false);
