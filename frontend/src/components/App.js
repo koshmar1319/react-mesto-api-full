@@ -253,7 +253,7 @@ function App() {
 
   function handleSignOut() {
     auth
-      .logout(userEmail)
+      .signOut(userEmail)
       .then(() => {
         setIsLoggedIn(null);
         history.push("/sign-in");

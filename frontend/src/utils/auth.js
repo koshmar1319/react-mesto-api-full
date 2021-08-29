@@ -22,10 +22,7 @@ class Auth {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        "password": password,
-        "email": email,
-      }),
+      body: JSON.stringify({ password, email }),
     }).then(this._checkResponse);
   }
 
@@ -36,10 +33,7 @@ class Auth {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        "password": password,
-        "email": email,
-      }),
+      body: JSON.stringify({ password, email }),
     }).then(this._checkResponse);
   }
 
