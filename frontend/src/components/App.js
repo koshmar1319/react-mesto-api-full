@@ -321,9 +321,9 @@ function App() {
             <Login onLogin={handleLogin} isLoading={isLoading} />
           </Route>
 
-          {/* <Route>
+          <Route>
             <Redirect to={!isLoggedIn ? "/sign-in" : "/"} />
-          </Route> */}
+          </Route>
         </Switch>
 
         <Footer isLoggedIn={isLoggedIn} />
