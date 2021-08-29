@@ -287,6 +287,7 @@ function App() {
       .catch(err => console.log(err))
     setUserEmail(null);
     setIsLoggedIn(false);
+    history.push("/sign-in");
   }
 
   return (
