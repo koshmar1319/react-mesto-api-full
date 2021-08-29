@@ -28,7 +28,7 @@ const deleteCard = (req, res, next) => {
   const currentUser = req.user._id;
   const { cardId } = req.params;
   Card.findById(cardId)
-    .orFail(() => next(new NotFoundError('Карточка с указанным _id не найдена!!')))
+    .orFail(() => next(new NotFoundError('Карточка с указанным идентификатором не найдена!!')))
     .then((card) => {
       if (!card.owner.equals(currentUser)) {
         next(new ForbiddenError('Вы не имеет права удалить карточку'));
@@ -56,7 +56,7 @@ const likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => next(new NotFoundError('Карточка с указанным _id не найдена!!')))
+    .orFail(() => next(new NotFoundError('Карточка с указанным идентификатором не найдена!!')))
     .then((data) => res.send(data))
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -73,7 +73,7 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => next(new NotFoundError('Карточка с указанным _id не найдена!!')))
+    .orFail(() => next(new NotFoundError('Карточка с указанным идентификатором не найдена!!')))
     .then((data) => res.send(data))
     .catch((err) => {
       if (err.name === 'CastError') {

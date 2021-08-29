@@ -274,7 +274,7 @@ function App() {
       .signOut()
         .catch(err => console.log(err))
       setUserEmail("");
-      setIsLoggedIn(false);
+      setIsLoggedIn(null);
   }
 
   return (
