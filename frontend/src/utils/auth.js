@@ -1,5 +1,3 @@
-
-
 import { authSettings } from "./utils";
 
 class Auth {
@@ -39,7 +37,7 @@ class Auth {
 
   signOut(email) {
     return fetch(`${this.baseUrl}/users/signout`, {
-      method: "DELETE",
+      method: "GET",
       credentials: 'include',
       headers: {
         "Content-Type": "application/json",
