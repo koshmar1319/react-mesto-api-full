@@ -300,7 +300,7 @@ function App() {
         />
         <Switch>
           <ProtectedRoute
-            //exact
+            exact
             path="/"
             component={Main}
             isLoggedIn={isLoggedIn}
