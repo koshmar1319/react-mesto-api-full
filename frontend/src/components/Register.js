@@ -1,17 +1,14 @@
-import { Link } from 'react-router-dom';
-import LoginForm from './LoginForm';
+import React from "react";
+import AuthForm from "./AuthForm";
 
 function Register({ onRegister }) {
   return (
-    <LoginForm
+    <AuthForm
       title="Регистрация"
-      submitBtnText="Зарегистрироваться"
+      name="register"
+      buttonText="Зарегистрироваться"
       onSubmit={onRegister}
-    >
-      <Link to="/sign-in" className="login-form__link">
-        Уже зарегистрированы? Войти
-      </Link>
-    </LoginForm>
+    />
   );
 }
 

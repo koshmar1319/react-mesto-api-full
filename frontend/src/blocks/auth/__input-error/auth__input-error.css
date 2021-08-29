@@ -1,0 +1,9 @@
+.auth__input-error {
+  color: #ff0000;
+}
+
+@media (max-width: 480px) {
+  .auth__input-error {
+    width: 230px;
+  }
+}

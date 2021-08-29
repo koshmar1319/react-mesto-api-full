@@ -1,0 +1,12 @@
+.profile__pencil {
+  width: 10px;
+  height: 10px;
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .profile__pencil {
+    width: 8px;
+    height: 8px;
+  }
+}

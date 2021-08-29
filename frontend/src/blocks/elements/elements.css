@@ -1,15 +1,9 @@
 .elements {
-  padding: 47px 100px 67px;
+  margin: 51px auto 0;
 }
 
-@media screen and (max-width: 1000px) {
+@media (max-width: 480px) {
   .elements {
-     padding: 47px 50px 67px; 
-  }
-}
-
-@media screen and (max-width: 500px) {
-  .elements {
-     padding: 36px 19px 48px; 
+    margin: 36px auto 0;
   }
 }

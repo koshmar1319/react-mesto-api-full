@@ -1,7 +1,11 @@
+import React from "react";
+
 function Footer() {
   return (
     <footer className="footer">
-      <p className="footer__copyright">©️ 2021. Комарьков Кирилл</p>
+      <p className="footer__text">
+        &copy; {new Date().getFullYear()} Mesto Russia
+      </p>
     </footer>
   );
 }

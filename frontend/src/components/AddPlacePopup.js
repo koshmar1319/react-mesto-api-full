@@ -1,70 +1,70 @@
-import React from 'react';
-import PopupWithForm from './PopupWithForm';
+import React from "react";
+import PopupWithForm from "./PopupWithForm";
+import { useFormAndValidation } from "../utils/useFormAndValidation";
 
-function AddPlacePopup(props) {
-  const [place, setPlace] = React.useState({
-    name: '',
-    link: '',
-  });
-
-  const handleChange = (evt) => {
-    setPlace((state) => ({
-      ...state,
-      [evt.target.name]: evt.target.value,
-    }));
-  };
-
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    props.onAddPlaceSubmit(place);
-  }
+function AddPlacePopup({ isOpen, onClose, onAddPlace, isLoading }) {
+  const { values, handleChange, errors, isValid, resetForm } =
+    useFormAndValidation();
 
   React.useEffect(() => {
-    setPlace({
-      name: '',
-      link: '',
-    });
-  }, [props.isOpen]);
+    resetForm({ title: "", link: "" });
+  }, [isOpen]);
+
+  function handleAddPlaceSubmit(e) {
+    e.preventDefault();
+    onAddPlace({ name: values.title, link: values.link });
+  }
 
   return (
     <PopupWithForm
-      {...props}
-      type={'add_card'}
-      title={'Новое место'}
-      submitBtnCaption={'Создать'}
-      onSubmit={handleSubmit}
+      title="Новое место"
+      name="card"
+      buttonText={isLoading ? "Создание . . ." : "Создать"}
+      onSubmit={handleAddPlaceSubmit}
+      isOpen={isOpen}
+      onClose={onClose}
+      buttonState={isValid}
     >
-      <section className="popup__section">
+      <div className="popup__area">
         <input
-          onChange={handleChange}
-          value={place.name || ''}
-          id="card-name"
+          className="popup__input popup__input_type_place"
           type="text"
-          name="name"
-          className="popup__input popup__input_type_img-name"
+          name="title"
           placeholder="Название"
-          required
           minLength="2"
           maxLength="30"
-          aria-label="Имя"
-        />
-        <span className="popup__input-error card-name-error"></span>
-      </section>
-      <section className="popup__section">
-        <input
+          value={values.title || ""}
           onChange={handleChange}
-          value={place.link || ''}
-          id="card-link"
+          onClose={onClose}
+          required
+        />
+        <span
+          className={`popup__input-error ${
+            errors.title ? "popup__input-error_active" : ""
+          }`}
+        >
+          {errors.title}
+        </span>
+      </div>
+      <div className="popup__area">
+        <input
+          className="popup__input popup__input_type_link"
           type="url"
           name="link"
-          className="popup__input popup__input_type_img-link"
           placeholder="Ссылка на картинку"
+          value={values.link || ""}
+          onChange={handleChange}
+          onClose={onClose}
           required
-          aria-label="Ссылка на картинку"
         />
-        <span className="popup__input-error card-link-error"></span>
-      </section>
+        <span
+          className={`popup__input-error ${
+            errors.link ? "popup__input-error_active" : ""
+          }`}
+        >
+          {errors.link}
+        </span>
+      </div>
     </PopupWithForm>
   );
 }

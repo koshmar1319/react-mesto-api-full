@@ -1,0 +1,10 @@
+.popup-upd__input {
+  margin: 0;
+  margin-top: 54px;
+}
+
+@media (max-width: 570px) {
+  .popup-upd__input {
+    margin-top: 34px;
+  }
+}

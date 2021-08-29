@@ -1,14 +1,114 @@
-const configAPI = {
-  baseUrl: 'https://api.kshmr-mesto.nomoredomains.monster',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
+//Old work code
+
+// class Api {
+//   constructor({ baseUrl, groupID, token, authUrl }) {
+//     this._baseUrl = baseUrl;
+//     this._groupID = groupID;
+//     this._token = token;
+//     this._authUrl = authUrl;
+//   }
+
+//   getUserInfo() {
+//     return fetch(`${this._baseUrl}/${this._groupID}/users/me`, {
+//       method: "GET",
+//       headers: {
+//         authorization: this._token,
+//       },
+//     }).then(this._showErrorMessage);
+//   }
+
+//   setUserInfo(data) {
+//     return fetch(`${this._baseUrl}/${this._groupID}/users/me`, {
+//       method: "PATCH",
+//       headers: {
+//         authorization: this._token,
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         name: data.name,
+//         about: data.about,
+//       }),
+//     }).then(this._showErrorMessage);
+//   }
+
+//   getInitialCards() {
+//     return fetch(`${this._baseUrl}/${this._groupID}/cards`, {
+//       method: "GET",
+//       headers: {
+//         authorization: this._token,
+//       },
+//     }).then(this._showErrorMessage);
+//   }
+
+//   addCard(card) {
+//     return fetch(`${this._baseUrl}/${this._groupID}/cards`, {
+//       method: "POST",
+//       headers: {
+//         authorization: this._token,
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         name: card.name,
+//         link: card.link,
+//       }),
+//     }).then(this._showErrorMessage);
+//   }
+
+//   deleteCard(card) {
+//     return fetch(`${this._baseUrl}/${this._groupID}/cards/${card._id}`, {
+//       method: "DELETE",
+//       headers: {
+//         authorization: this._token,
+//       },
+//     }).then(this._showErrorMessage);
+//   }
+
+//   setUserAvatar(avatar) {
+//     return fetch(`${this._baseUrl}/${this._groupID}/users/me/avatar`, {
+//       method: "PATCH",
+//       headers: {
+//         authorization: this._token,
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         avatar: avatar,
+//       }),
+//     }).then(this._showErrorMessage);
+//   }
+
+//   changeLikeCardStatus(card, likeCardStatus) {
+//     return fetch(`${this._baseUrl}/${this._groupID}/cards/likes/${card._id}`, {
+//       method: likeCardStatus ? "PUT" : "DELETE",
+//       headers: {
+//         authorization: this._token,
+//       },
+//     }).then(this._showErrorMessage);
+//   }
+
+//   _showErrorMessage = (res) => {
+//     if (res.ok) {
+//       return res.json();
+//     }
+//     return Promise.reject(`Ошибка ${res.status}`);
+//   };
+// }
+
+// const api = new Api({
+//   baseUrl: "https://mesto.nomoreparties.co/v1",
+//   groupID: "cohort-22",
+//   token: "23cb390e-6742-419b-8dec-601afe24420f",
+//   authUrl: "https://auth.nomoreparties.co",
+// });
+
+// export default api;
+
+//=========================================
+
+import { authSettings } from './utils';
 
 class Api {
-  constructor({ baseUrl, headers }) {
+  constructor({ baseUrl }) {
     this._baseUrl = baseUrl;
-    this._headers = headers;
   }
 
   _checkResponse(res) {
@@ -16,13 +116,15 @@ class Api {
       return res.json();
     }
     return Promise.reject(`Ошибка ${res.status}`);
-  }
+  };
 
-  getCards() {
+  getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'GET',
       credentials: 'include',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }).then(this._checkResponse);
   }
 
@@ -30,27 +132,33 @@ class Api {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'GET',
       credentials: 'include',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }).then(this._checkResponse);
   }
 
-  setUserInfo(user) {
+  setUserInfo(data) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       credentials: 'include',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        name: user.name,
-        about: user.about,
+        name: data.name,
+        about: data.about,
       }),
     }).then(this._checkResponse);
   }
 
-  createCard(card) {
+  addCard(card) {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
       credentials: 'include',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         name: card.name,
         link: card.link,
@@ -58,20 +166,23 @@ class Api {
     }).then(this._checkResponse);
   }
 
-  deleteCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}`, {
+  deleteCard(card) {
+    return fetch(`${this._baseUrl}/cards/${card._id}`, {
       method: 'DELETE',
       credentials: 'include',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }).then(this._checkResponse);
   }
 
-  changeLikeCardStatus(cardId, isLiked) {
-    const method = isLiked ? 'PUT' : 'DELETE';
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method,
+  changeLikeCardStatus(card, likeCardStatus) {
+    return fetch(`${this._baseUrl}/cards/${card._id}/likes`, {
+      method: (likeCardStatus ? 'PUT' : 'DELETE'),
       credentials: 'include',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }).then(this._checkResponse);
   }
 
@@ -79,14 +190,16 @@ class Api {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       credentials: 'include',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        avatar,
+        avatar: avatar,
       }),
     }).then(this._checkResponse);
   }
 }
 
-const api = new Api(configAPI);
+const api = new Api(authSettings);
 
 export default api;

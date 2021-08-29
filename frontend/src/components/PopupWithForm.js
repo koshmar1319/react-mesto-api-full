@@ -1,27 +1,42 @@
-function PopupWithForm(props) {
-  const submitBtnCaptionIsLoading =
-    props.submitBtnCaptionIsLoading || 'Сохранение...';
+import React from "react";
+
+function PopupWithForm({
+  title,
+  name,
+  isOpen,
+  buttonText,
+  onClose,
+  children,
+  containerName,
+  titleName,
+  btnName,
+  onSubmit,
+  buttonState,
+}) {
   return (
-    <div className={`popup ${props.isOpen ? 'popup_is-opened' : ''}`}>
-      <div className="popup__container">
-        <button
-          onClick={props.onClose}
-          type="button"
-          className="popup__close-btn btn-hover"
-        />
-        <h2 className="popup__title">{props.title}</h2>
+    <div className={`popup ${isOpen ? "popup_opened" : ""}`}>
+      <div className={`popup__container ${containerName ? containerName : ""}`}>
+        <button className="popup__close" type="button" onClick={onClose}>
+          &times;
+        </button>
+        <h2 className={`popup__title ${titleName ? titleName : ""}`}>
+          {title}
+        </h2>
         <form
-          onSubmit={props.onSubmit}
-          name={props.type}
-          className="popup__form"
+          className="popup__form popup__form_profile"
+          name={`popup-form-${name}`}
+          onSubmit={onSubmit}
           noValidate
         >
-          {props.children}
-
-          <button type="submit" className="popup__form-submit btn-hover">
-            {props.isLoading
-              ? submitBtnCaptionIsLoading
-              : props.submitBtnCaption}
+          {children}
+          <button
+            className={`popup__btn ${btnName ? btnName : ""} ${
+              !buttonState ? "popup__btn_inactive" : ""
+            }`}
+            type="submit"
+            disabled={!buttonState ? true : ""}
+          >
+            {buttonText}
           </button>
         </form>
       </div>
