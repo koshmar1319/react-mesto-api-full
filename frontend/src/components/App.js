@@ -273,7 +273,7 @@ function App() {
 
   function handleSignOut() {
     auth
-      .signOut()
+      .signOut(userEmail)
       .catch(err => console.log(err))
     setIsLoggedIn(false);
     history.push("/sign-in");
