@@ -53,7 +53,8 @@ function AuthForm({ title, name, buttonText, onSubmit }) {
           className={`auth__input ${
             errors.password ? "auth__input_error" : ""
           }`}
-          minLength="8"
+          // minLength="8"
+          minLength="2"
           maxLength="40"
           onChange={handleChange}
           required
