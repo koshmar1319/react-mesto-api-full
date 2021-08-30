@@ -69,8 +69,10 @@ function AuthForm({ title, name, buttonText, onSubmit }) {
         {
           <button
             type="submit"
-            className={`auth__btn ${!isValid ? "auth__btn_inactive" : ""}`}
-            disabled={!isValid ? true : ""}
+            // className={`auth__btn ${!isValid ? "auth__btn_inactive" : ""}`}
+            className={`auth__btn`}
+            // disabled={!isValid ? true : ""}
+            disabled={""}
           >
             {buttonText}
           </button>
