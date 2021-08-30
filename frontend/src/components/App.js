@@ -44,22 +44,26 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const history = useHistory();
 
-  React.useEffect(() => {
-    setIsLoading(false);
-    handleCheckToken();
-    setIsSuccessInfoToolTip(false);
-  }, []);
+  // React.useEffect(() => {
+  //   setIsLoading(false);
+  //   handleCheckToken();
+  //   setIsSuccessInfoToolTip(false);
+  // }, []);
 
   React.useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([userData, cards]) => {
         setCurrentUser(userData);
         setCards(cards);
+
+        setUserEmail(userData.email);
+        setIsLoggedIn(true);
+        history.push('/');
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [isLoggedIn]);
+  }, [/* isLoggedIn */]);
 
   function handleEditProfileClick() {
     setIsLoading(false);
