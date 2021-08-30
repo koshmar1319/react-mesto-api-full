@@ -28,7 +28,8 @@ router.get('/', getUsers);
 
 router.get('/me', getMe);
 
-router.get('/signout', signOut);
+// router.get('/signout', signOut);
+router.delete('/signout', signOut);
 
 router.get('/:userId', celebrate({
   params: Joi.object().keys({

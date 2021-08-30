@@ -37,7 +37,8 @@ class Auth {
 
   signOut(email) {
     return fetch(`${this.baseUrl}/users/signout`, {
-      method: "GET",
+      // method: "GET",
+      method: "DELETE",
       credentials: 'include',
       headers: {
         "Content-Type": "application/json",
