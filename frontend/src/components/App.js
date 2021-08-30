@@ -277,6 +277,7 @@ function App() {
       .catch(err => console.log(err))
     setUserEmail(null);
     setIsLoggedIn(false);
+    localStorage.setItem('hello', 'world');
     // history.push("/sign-in");
   }
 
