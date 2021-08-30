@@ -275,10 +275,10 @@ function App() {
     auth
       .signOut()
       .catch(err => console.log(err))
-    setUserEmail(null);
     setIsLoggedIn(false);
-    localStorage.setItem('hello', 'world');
-    // history.push("/sign-in");
+    history.push("/sign-in");
+    setUserEmail(null);
+    setUserPassword("");
   }
 
   return (
