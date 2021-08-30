@@ -55,10 +55,6 @@ function App() {
       .then(([userData, cards]) => {
         setCurrentUser(userData);
         setCards(cards);
-
-        // setUserEmail(userData.email);
-        // setIsLoggedIn(true);
-        // history.push('/');
       })
       .catch((err) => {
         console.log(err);
@@ -215,17 +211,6 @@ function App() {
       });
   }
 
-  // function getData() {
-  //   Promise.all([api.getUserInfo(), api.getCards()])
-  //     .then(([userData, cardsData]) => {
-  //       setCurrentUser(userData);
-  //       setCards(cardsData);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }
-
   function handleLogin(data) {
     auth
       .login(data)
@@ -257,23 +242,6 @@ function App() {
         }
       })
   }
-
-  // function handleSignOut() {
-  //   auth
-  //     .signOut(userEmail)
-  //     .then(() => {
-  //       setIsLoggedIn(null);
-  //       history.push("/sign-in");
-  //       setUserEmail("");
-  //       setUserPassword("");
-  //       setIsSuccessInfoToolTip(null);
-  //       setIsLoading(false);
-  //     })
-  //     .catch(() => {
-  //       setIsSuccessInfoToolTip(false);
-  //       setInfoToolTipPopupOpen(true);
-  //     })
-  // }
 
   function handleSignOut() {
     auth
