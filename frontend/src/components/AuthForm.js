@@ -53,8 +53,7 @@ function AuthForm({ title, name, buttonText, onSubmit }) {
           className={`auth__input ${
             errors.password ? "auth__input_error" : ""
           }`}
-          // minLength="8"
-          minLength="2"
+          minLength="8"
           maxLength="40"
           onChange={handleChange}
           required
@@ -69,10 +68,8 @@ function AuthForm({ title, name, buttonText, onSubmit }) {
         {
           <button
             type="submit"
-            // className={`auth__btn ${!isValid ? "auth__btn_inactive" : ""}`}
-            className={`auth__btn`}
-            // disabled={!isValid ? true : ""}
-            disabled={""}
+            className={`auth__btn ${!isValid ? "auth__btn_inactive" : ""}`}
+            disabled={!isValid ? true : ""}
           >
             {buttonText}
           </button>
