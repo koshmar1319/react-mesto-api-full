@@ -1,12 +1,28 @@
-# react-mesto-api-full
-Репозиторий для приложения проекта `Mesto`, включающий фронтенд и бэкенд части приложения со следующими возможностями: авторизации и регистрации пользователей, операции с карточками и пользователями. Бэкенд расположите в директории `backend/`, а фронтенд - в `frontend/`. 
-  
-Пожалуйста, прикрепите в это описание ссылку на сайт, размещенный на Яндекс.Облаке.
+# Проект React-mesto-api-full
 
-# Проектная работа 15
+### Описание:
+Репозиторий для приложения проекта `Mesto`, включающий фронтенд и бэкенд части приложения.
 
-Фронтенд https://kshmr-mesto.nomoredomains.monster
+Фронтенд:
+> kshmr-mesto.nomoredomains.monster
 
-Бэкенд https://api.kshmr-mesto.nomoredomains.monster
+Бэкенд:
+> api.kshmr-mesto.nomoredomains.monster
 
-ip адрес сервера 84.252.140.225
+IP адрес сервера:
+> 84.252.140.225
+
+### Стек технологий:
+| CSS <code><img  height="20"  src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/css/css.png"></code> | JavaScript <code><img  height="20"  src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/javascript/javascript.png"></code>| React <code><img  height="20"  src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/react/react.png"></code>| Node.js <code><img  height="20"  src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/nodejs/nodejs.png"></code> | Express <code><img  height="20"  src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/express/express.png"></code> | Mongoose <code><img  height="20"  src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/mongoose/mongoose.png"></code> | MongoDB <code><img  height="20"  src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/mongodb/mongodb.png"></code> | 
+|---|---|---|---|---|---|---|
+
+### Функциональность:
+* Регистрация пользователя
+* Авторизация пользователя
+* Открытие/закрытие попапов
+* Добавление/удаление карточки
+* Редактирование профиля
+* Редактирование аватара
+* Постановка/снятие лайка
+* Открытие картинки карточки в полноэкранном режиме
+* Во всех строках ввода реализована валидация
